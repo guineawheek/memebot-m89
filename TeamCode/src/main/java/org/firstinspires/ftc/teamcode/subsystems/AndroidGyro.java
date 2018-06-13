@@ -110,7 +110,6 @@ public class AndroidGyro
 
         return angle;
     }
-    
     private double currentHeadingRaw()
     {
         double angle = clampAngle(Math.sqrt(Math.pow(x, 2) + Math.pow(z, 2)));
