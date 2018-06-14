@@ -34,11 +34,11 @@ import org.firstinspires.ftc.teamcode.subsystems.Turn;
             waitForStart();
 
             //jewel
-            jewel.hitRedJewel();
+                jewel.hitRedJewel();
             //forward
-            motors.MoveTo(999,0,.5);//if, else if, else depending on column
+                motors.MoveTo(999,0,.5);//if, else if, else depending on column
             //turn
-            motors.Turn(90,gyro);
+                motors.Turn(90,gyro);
             //bring out building detector
                 //svoAuto.setposition(OUT)
             //align
