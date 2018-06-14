@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.hardware.lynx.commands.core.LynxGetBulkInputDataResponse;
 
-public class EncoderLocalizer implements Subsystem {
+public class EncoderLocalizer extends Subsystem {
 
     private RevModuleSensorMonitor hubMonitor;
     private AngularRateSensor gyro;
@@ -32,7 +32,7 @@ public class EncoderLocalizer implements Subsystem {
         return 0; // stub for now, return in radians
     }
 
-    public void update() {
+    public synchronized void update() {
         LynxGetBulkInputDataResponse data = hubMonitor.getLastResponse();
         double deltaTheta = getDeltaTheta();
         double deltaX = data.getEncoder(encXIndex) - lastX - xOffset * deltaTheta;

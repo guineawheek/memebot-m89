@@ -6,7 +6,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.lynx.commands.core.LynxGetBulkInputDataCommand;
 import com.qualcomm.hardware.lynx.commands.core.LynxGetBulkInputDataResponse;
 
-public class RevModuleSensorMonitor implements Subsystem {
+public class RevModuleSensorMonitor extends Subsystem {
     private LynxModule revModule;
     private LynxGetBulkInputDataResponse lastResponse;
     private long lastTs;
@@ -26,7 +26,7 @@ public class RevModuleSensorMonitor implements Subsystem {
         }
 
     }
-    public void update() {
+    public synchronized void update() {
         LynxGetBulkInputDataResponse response = getResponse();
         if (response == null) return; // nothing useful this time around :/
 
