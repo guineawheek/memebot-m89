@@ -39,6 +39,9 @@ front5: jeweldown 0.23
     public static final double FLIPPER_UNGRAB = 0.57;
     public static final double FLIPPER_GRAB = 0.15;
 
+    public static final double ALIGN_DOWN = 1; //need to test
+    public static final double ALIGN_UP = 0.5;
+
     Servo svoJewelPivot;
     Servo svoJewelLift;
 
@@ -49,12 +52,11 @@ front5: jeweldown 0.23
     Servo svoFlipperTop;
     Servo svoFlipperBottom;
 
-    Servo svoAutoLeft;
-    Servo svoAutoRight;
+    Servo svoAutoAlign;
+
 
     public Servos(HardwareMap hardwareMap) {
-        svoAutoLeft = hardwareMap.servo.get("svoAutoLeft");
-        svoAutoRight = hardwareMap.servo.get("svoAutoRight");
+        svoAutoAlign = hardwareMap.servo.get("svoAutoAlign");
 
         svoJewelLift = hardwareMap.servo.get("svoJewelLift");
         svoJewelPivot = hardwareMap.servo.get("svoJewelPivot");
@@ -105,5 +107,7 @@ front5: jeweldown 0.23
         svoFlipperTop.setPosition(grab ? FLIPPER_GRAB : FLIPPER_UNGRAB);
         svoFlipperBottom.setPosition(grab ? FLIPPER_GRAB : FLIPPER_UNGRAB);
     }
-
+    public void setAutoAlign(boolean aligning){
+        svoAutoAlign.setPosition(aligning ? ALIGN_UP : ALIGN_DOWN);
+    }
 }

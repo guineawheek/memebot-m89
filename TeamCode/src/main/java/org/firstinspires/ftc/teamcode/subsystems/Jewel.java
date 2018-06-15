@@ -11,8 +11,8 @@ public class Jewel {
     HardwareMap HardwareMap;
     Telemetry telemetry;
 
-    Servo JDown;
-    Servo JSwing;
+    Servo svoJewelLift;
+    Servo svoJewelPivot;
 
     ColorSensor JLeft;
     ColorSensor JRight;
@@ -32,8 +32,8 @@ public class Jewel {
         this.HardwareMap = hardwareMap;
         this.telemetry = telemetry;
 
-        JDown = hardwareMap.servo.get("svoJewelLift");
-        JSwing = hardwareMap.servo.get("svoJewelPivot");
+        svoJewelLift = hardwareMap.servo.get("svoJewelLift");
+        svoJewelPivot = hardwareMap.servo.get("svoJewelPivot");
 
         JLeft = hardwareMap.colorSensor.get("JLeft");
         JRight = hardwareMap.colorSensor.get("JRight");
@@ -45,21 +45,21 @@ public class Jewel {
     }
 
     public void jewelStow() {
-        JDown.setPosition(DOWN_STOW_POS);
-        JSwing.setPosition(SWING_STOW_POS);
+        svoJewelLift.setPosition(DOWN_STOW_POS);
+        svoJewelPivot.setPosition(SWING_STOW_POS);
     }
 
     public void jewelExplore() {
-        JSwing.setPosition(SWING_EX_POS);
-        JDown.setPosition(DOWN_EX_POS);
+        svoJewelPivot.setPosition(SWING_EX_POS);
+        svoJewelLift.setPosition(DOWN_EX_POS);
     }
 
     public void swingL() {
-        JSwing.setPosition(SWING_LEFT);
+        svoJewelPivot.setPosition(SWING_LEFT);
     }
 
     public void swingR() {
-        JSwing.setPosition(SWING_RIGHT);
+        svoJewelPivot.setPosition(SWING_RIGHT);
     }
 
     public void jewelAction(boolean lb, boolean lr, boolean rb, boolean rr) { //red version (if we want blue, rb,rr,lb,lr)

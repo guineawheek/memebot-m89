@@ -206,7 +206,9 @@ public class Turn {HardwareMap hardMap;
         tele.update();
     }
 
+    public void MoveToByTime(double time , double direction , double power){
 
+    }
     public void StopMotors(){
         rightFront.setPower(0);
         leftFront.setPower(0);
