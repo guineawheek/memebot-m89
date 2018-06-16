@@ -243,11 +243,12 @@ public class DriveTrain {
         double br = power * (sn + cs);
         double bl = power * (-sn + cs);
 
+        mtrFL.setPower(fl);
+        mtrFR.setPower(fr);
+        mtrBL.setPower(bl);
+        mtrBR.setPower(br);
+
         while (range.cmUltrasonic() > distance) {
-            mtrFL.setPower(fl);
-            mtrFR.setPower(fr);
-            mtrBL.setPower(bl);
-            mtrBR.setPower(br);
         }
 
         stopMotors();

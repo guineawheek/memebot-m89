@@ -41,7 +41,7 @@ public class ThiccTeleop extends OpMode {
     public void loop() {
         boolean ScoringPositionActivated = false;
         boolean isGrabbed = false;
-        //boolean lastpress1 = false;
+        //boolean isPressed = false;
 
         // ----- drive code -----
         // square inputs; this makes smaller movements easier
@@ -66,25 +66,26 @@ public class ThiccTeleop extends OpMode {
             mtrRelic.setPower(gamepad2.right_stick_y);
         }
 
-        if (gamepad1.right_trigger > .5 /* && !lastpress1*/) {
-            ScoringPositionActivated = !ScoringPositionActivated;
-        }
-        /* if (gamepad1.right_trigger > .5){
-                lastpress1 = true;
-            }
-            else{
-                lastpress1 = false;
-            }
-        */
-        if(gamepad1.right_bumper){
-            isGrabbed = !isGrabbed;
-        }
-
-        servos.setFlipperUp(ScoringPositionActivated);
-        servos.setFlipperGrab(isGrabbed);
 
         // ----- glyphs -----
         mtrGlyphLift.setPower(gamepad2.left_stick_y);
+
+       /* if(gamepad1.right_trigger > .5 ){
+            isPressed = true;
+        }
+        else{
+            isPressed = false;
+        }*/
+
+        if (gamepad1.right_trigger > .5 /*&& !isPressed*/) {
+            ScoringPositionActivated = !ScoringPositionActivated;
+        }
+        servos.setFlipperUp(ScoringPositionActivated);
+
+        if(gamepad1.right_bumper){
+            isGrabbed = !isGrabbed;
+        }
+        servos.setFlipperGrab(isGrabbed);
 
     }
 }
