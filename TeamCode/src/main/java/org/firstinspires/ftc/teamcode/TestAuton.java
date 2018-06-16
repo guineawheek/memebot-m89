@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.subsystems.VuMarkRecognition;
  * Created by xiax on 4/23/2018.
  */
 @Disabled
-@Autonomous(name = "mv24dir0", group = "AAAA")
+@Autonomous(name = "testauton", group = "AAAA")
 public class TestAuton extends LinearOpMode {
     // far red
     DriveTrain motors = null;

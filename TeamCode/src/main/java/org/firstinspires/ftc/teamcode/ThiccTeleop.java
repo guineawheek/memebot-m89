@@ -41,7 +41,7 @@ public class ThiccTeleop extends OpMode {
     public void loop() {
         boolean ScoringPositionActivated = false;
         boolean isGrabbed = false;
-        //boolean isPressed = false;
+        boolean isPressed = false;
 
         // ----- drive code -----
         // square inputs; this makes smaller movements easier
