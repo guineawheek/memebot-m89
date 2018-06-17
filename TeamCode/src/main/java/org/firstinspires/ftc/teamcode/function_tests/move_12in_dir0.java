@@ -1,13 +1,15 @@
 package org.firstinspires.ftc.teamcode.function_tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.AutonomousOpMode;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.Gyro;
-
+@Disabled
 @Autonomous(name = "12in dir0",group = "a")
-public class move_12in_dir0 extends LinearOpMode {
+public class move_12in_dir0 extends AutonomousOpMode {
     DriveTrain motors = null;
     Gyro gyro = null;
     @Override
@@ -17,7 +19,7 @@ public class move_12in_dir0 extends LinearOpMode {
 
         waitForStart();
 
-        motors.MoveToByEncoder(12,0,.5);
+        MoveToByEncoder(12,0,.5);
 
     }
 }

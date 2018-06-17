@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.subsystems.VuMarkRecognition;
 /**
  * Created by xiax on 4/23/2018.
  */
-@Disabled
+
 @Autonomous(name = "testauton", group = "Autonomous")
 public class TestAuton extends AutonomousOpMode {
     // far red
@@ -40,6 +40,7 @@ public class TestAuton extends AutonomousOpMode {
         telemetry.update();
 */
         initit();
+
         waitForStart();
 
         int column = vuMark.getVuMark();
@@ -58,11 +59,11 @@ public class TestAuton extends AutonomousOpMode {
         else //center
             MoveToByEncoder(15, 270, .5);//12 in
 
-        MoveToByRange(16/*cm*/,180,.5); //forwards based on range
+        MoveToByRange(16/*cm*/,180,.2); //forwards based on range
 
         servos.setAutoAlign(true); //raise alignment
 
-        MoveToBySwitch(270,.5);//strafe until alignment hit
+        MoveToBySwitch(270,.3);//strafe until alignment hit
 
         sleep (50);
 
@@ -73,8 +74,8 @@ public class TestAuton extends AutonomousOpMode {
         servos.setFlipperGrab(false);
         sleep(50);
 
-        MoveToByTime(200, 0, .5); //little nudge for block
-        MoveToByTime(300, 180, .5);
+        MoveToByTime(500, 0, .3); //little nudge for block
+        MoveToByTime(1000, 180, .5);
 
         servos.setFlipperUp(false);
 

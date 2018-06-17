@@ -47,15 +47,28 @@ public class ThiccTeleop extends OpMode {
 
         // ----- drive code -----
         // square inputs; this makes smaller movements easier
-        double x1 = Math.copySign(Math.pow(gamepad1.left_stick_x, 2), gamepad1.left_stick_x);
-        double y1 = Math.copySign(Math.pow(gamepad1.left_stick_y, 2), -gamepad1.left_stick_y);
-        double x2 = Math.copySign(Math.pow(gamepad1.right_stick_x, 2), gamepad1.right_stick_x);
+        double x1 = Math.copySign(Math.pow(gamepad1.left_stick_x, 1), gamepad1.left_stick_x);
+        double y1 = Math.copySign(Math.pow(gamepad1.left_stick_y, 1), -gamepad1.left_stick_y);
+        double x2 = Math.copySign(Math.pow(gamepad1.right_stick_x, 1), gamepad1.right_stick_x);
 
         drivebase.driveArcade(x1, y1, x2, 1);
 
         // ----- intake ------
-        mtrIntakeLeft.setPower(gamepad1.left_bumper ? -1 : gamepad1.left_trigger);
-        mtrIntakeRight.setPower(gamepad1.right_bumper ? -1 : gamepad1.right_trigger);
+       // mtrIntakeLeft.setPower(gamepad1.left_bumper ? -1 : gamepad1.left_trigger);
+        //mtrIntakeRight.setPower(gamepad1.right_bumper ? -1 : gamepad1.right_trigger);
+
+        if(gamepad1.right_trigger > .5){
+            mtrIntakeLeft.setPower(1);
+            mtrIntakeRight.setPower(1);
+        }
+        else if(gamepad1.right_bumper){
+            mtrIntakeLeft.setPower(-1);
+            mtrIntakeRight.setPower(-1);
+        } else {
+            mtrIntakeLeft.setPower(0);
+            mtrIntakeRight.setPower(0);
+        }
+
 
         telemetry.addData("leftCurrent", mtrIntakeLeft.getCurrentDraw());
         telemetry.addData("rightCurrent", mtrIntakeRight.getCurrentDraw());
@@ -63,7 +76,7 @@ public class ThiccTeleop extends OpMode {
         // ----- relic -----
 
         if (gamepad2.right_stick_y == 0)
-            mtrRelic.setPower(-.3);
+            mtrRelic.setPower(.2);
         else
             mtrRelic.setPower(gamepad2.right_stick_y);
 
@@ -71,22 +84,25 @@ public class ThiccTeleop extends OpMode {
 
         mtrGlyphLift.setPower(gamepad2.left_stick_y);
 
-        if (gamepad1.right_trigger > .5 && !isPressed)
+        servos.setFlipperGrab(false); // for now
+        servos.setFlipperUp(false);
+
+  /*      if (gamepad1.left_trigger > .5 && !isPressed)
             ScoringPositionActivated = !ScoringPositionActivated;
 
         servos.setFlipperUp(ScoringPositionActivated);
 
-        if(gamepad1.right_trigger > .5 )
+        if(gamepad1.left_trigger > .5 )
             isPressed = true;
         else
             isPressed = false;
 
-        if (gamepad1.right_bumper && !bumperisPressed)
+        if (gamepad1.left_bumper && !bumperisPressed)
             isGrabbed = !isGrabbed;
 
         servos.setFlipperGrab(isGrabbed);
 
         bumperisPressed = gamepad1.right_bumper;
-
+*/
     }
 }

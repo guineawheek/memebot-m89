@@ -23,8 +23,8 @@ public abstract class AutonomousOpMode extends LinearOpMode {
     Jewel jewel;
     Servos servos;
     VuMarkRecognition vuMark;
-    ModernRoboticsI2cRangeSensor ssRange;
-    DigitalChannel ssLimitSwitch; //port 1
+    ModernRoboticsI2cRangeSensor snsRange;
+    DigitalChannel snsLimitSwitch; //port 1
 
     DcMotor mtrFR;
     DcMotor mtrFL;
@@ -56,8 +56,8 @@ public abstract class AutonomousOpMode extends LinearOpMode {
         jewel = new Jewel(hardwareMap, telemetry);
         servos = new Servos(hardwareMap);
 
-        ssRange = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "ssRange");
-        ssLimitSwitch = hardwareMap.get(DigitalChannel.class, "ssLimitSwitch");
+        snsRange = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "snsRange");
+        snsLimitSwitch = hardwareMap.get(DigitalChannel.class, "snsLimitSwitch");
 
         vuMark = new VuMarkRecognition(this.hardwareMap, this.telemetry);
 
@@ -111,14 +111,14 @@ public abstract class AutonomousOpMode extends LinearOpMode {
 
     public void MoveToByRange(double distance, double direction, double power) {
         motors.MoveTo(direction,power);
-        while (ssRange.cmUltrasonic() > distance && opModeIsActive()) {
+        while (snsRange.cmUltrasonic() > distance && opModeIsActive()) {
         }
         motors.stopMotors();
     }
 
     public void MoveToBySwitch(double direction, double power) {
         motors.MoveTo(direction,power);
-        while (!ssLimitSwitch.getState() && opModeIsActive()) {
+        while (!snsLimitSwitch.getState() && opModeIsActive()) {
         }
         motors.stopMotors();
 

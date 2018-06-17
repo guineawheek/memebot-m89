@@ -14,8 +14,8 @@ public class Jewel {
     Servo svoJewelLift;
     Servo svoJewelPivot;
 
-    ColorSensor ssColorSensorLeft;
-    ColorSensor ssColorSensorRight;
+    ColorSensor snsColorSensorLeft;
+    ColorSensor snsColorSensorRight;
 
     //all constants need testing
 
@@ -35,13 +35,13 @@ public class Jewel {
         svoJewelLift = hardwareMap.servo.get("svoJewelLift");
         svoJewelPivot = hardwareMap.servo.get("svoJewelPivot");
 
-        ssColorSensorLeft = hardwareMap.colorSensor.get("ssColorSensorLeft");
-        ssColorSensorRight = hardwareMap.colorSensor.get("ssColorSensorRight");
+        snsColorSensorLeft = hardwareMap.colorSensor.get("snsColorSensorLeft");
+        snsColorSensorRight = hardwareMap.colorSensor.get("snsColorSensorRight");
     }
 
     public void ledOn(boolean x) {
-        ssColorSensorLeft.enableLed(x);
-        ssColorSensorRight.enableLed(x);
+        snsColorSensorLeft.enableLed(x);
+        snsColorSensorRight.enableLed(x);
     }
 
     public void jewelStow() {
@@ -96,22 +96,22 @@ public class Jewel {
 
     public boolean rr() {
         sleepC(10);
-        return ssColorSensorRight.red() >= ssColorSensorRight.blue();
+        return snsColorSensorRight.red() >= snsColorSensorRight.blue();
     }
 
     public boolean lr() {
         sleepC(10);
-        return ssColorSensorLeft.red() >= ssColorSensorLeft.blue();
+        return snsColorSensorLeft.red() >= snsColorSensorLeft.blue();
     }
 
     public boolean rb() {
         sleepC(10);
-        return ssColorSensorRight.red() <= ssColorSensorRight.blue();
+        return snsColorSensorRight.red() <= snsColorSensorRight.blue();
     }
 
     public boolean lb() {
         sleepC(10);
-        return ssColorSensorLeft.blue() >= ssColorSensorLeft.red();
+        return snsColorSensorLeft.blue() >= snsColorSensorLeft.red();
     }
 
     public void sleepC(long millis) {
