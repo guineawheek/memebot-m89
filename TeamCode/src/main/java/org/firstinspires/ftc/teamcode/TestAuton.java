@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.subsystems.VuMarkRecognition;
  * Created by xiax on 4/23/2018.
  */
 @Disabled
-@Autonomous(name = "testauton", group = "AAAA")
-public class TestAuton extends LinearOpMode {
+@Autonomous(name = "testauton", group = "Autonomous")
+public class TestAuton extends AutonomousOpMode {
     // far red
     DriveTrain motors = null;
     Gyro gyro = null;
@@ -25,39 +25,47 @@ public class TestAuton extends LinearOpMode {
     VuMarkRecognition vuMark;
     @Override
     public void runOpMode() {
-        motors = new DriveTrain(hardwareMap, telemetry);
+       /* motors = new DriveTrain(hardwareMap, telemetry);
         gyro = new Gyro(hardwareMap, telemetry);
         jewel = new Jewel(hardwareMap, telemetry);
         servos = new Servos(hardwareMap);
 
         vuMark = new VuMarkRecognition(this.hardwareMap, this.telemetry);
 
-        servos.init(); //auto version - need to do - make sure to grip the block
+        servos.autoInit();
+
+        jewel.jewelStow();
 
         telemetry.addData("Status", "DriveTrain Initialized");
         telemetry.update();
-
+*/
+        initit();
         waitForStart();
 
         int column = vuMark.getVuMark();
 
+        servos.setRelicPivotGrab(false);
+
         jewel.hitRedJewel(); //all steps of jewels
 
         //all distances unknown
-        motors.MoveTo(20, 180, .5); //off the stone
+        MoveToByEncoder(24, 180, .5); //off the stone
 
         if (column == 1) //left
-            motors.MoveTo(1, 270, .5);
+            MoveToByEncoder(22, 270, .5);//19 in
         else if (column == 3) //right
-            motors.MoveTo(3, 270, .5);
+            MoveToByEncoder(8, 270, .5);//5 in
         else //center
-            motors.MoveTo(2, 270, .5);
-        motors.MoveToByRange(16/*cm*/,180,.5); //forwards based on range
+            MoveToByEncoder(15, 270, .5);//12 in
+
+        MoveToByRange(16/*cm*/,180,.5); //forwards based on range
 
         servos.setAutoAlign(true); //raise alignment
 
-        motors.MoveToBySwitch(270,.5);//strafe until alignment hit
+        MoveToBySwitch(270,.5);//strafe until alignment hit
+
         sleep (50);
+
         servos.setAutoAlign(false); //lower alignment
 
         servos.setFlipperUp(true);//deposit
@@ -65,12 +73,12 @@ public class TestAuton extends LinearOpMode {
         servos.setFlipperGrab(false);
         sleep(50);
 
-        motors.MoveToByTime(100, 0, .5); //little nudge for block
-        motors.MoveToByTime(200, 180, .5);
+        MoveToByTime(200, 0, .5); //little nudge for block
+        MoveToByTime(300, 180, .5);
 
         servos.setFlipperUp(false);
 
-        motors.MoveTo(5,0,.5); //back out - maybe for more? - park in box
+        MoveToByEncoder(5,0,.5); //back out - maybe for more? - park in box
 
     }
 }

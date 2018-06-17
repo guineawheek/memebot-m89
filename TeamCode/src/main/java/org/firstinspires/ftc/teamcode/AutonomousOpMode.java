@@ -1,28 +1,35 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
+import org.firstinspires.ftc.teamcode.subsystems.Gyro;
+import org.firstinspires.ftc.teamcode.subsystems.Jewel;
+import org.firstinspires.ftc.teamcode.subsystems.Servos;
+import org.firstinspires.ftc.teamcode.subsystems.VuMarkRecognition;
 
 import static java.lang.Math.abs;
 
-//port 1 switch sensor
-public class DriveTrain {
-    HardwareMap hardMap;
-    Telemetry tele;
+public abstract class AutonomousOpMode extends LinearOpMode {
 
-    public DcMotor mtrFR = null;
-    public DcMotor mtrFL = null;
-    public DcMotor mtrBR = null;
-    public DcMotor mtrBL = null;
+    DriveTrain motors;
+    Gyro gyro = null;
+    Jewel jewel;
+    Servos servos;
+    VuMarkRecognition vuMark;
+    ModernRoboticsI2cRangeSensor ssRange;
+    DigitalChannel ssLimitSwitch; //port 1
 
+    DcMotor mtrFR;
+    DcMotor mtrFL;
+    DcMotor mtrBR;
+    DcMotor mtrBL;
 
     static final double COUNTS_PER_MOTOR_REV = 498;
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
@@ -32,24 +39,43 @@ public class DriveTrain {
     static final double DRIVE_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
 
+    public void initit() {
 
-    public DriveTrain(HardwareMap hMap, Telemetry telemetry) {
-        tele = telemetry;
-        hardMap = hMap;
-
-        mtrFR = hardMap.get(DcMotor.class, "m2");
-        mtrFL = hardMap.get(DcMotor.class, "m1");
-        mtrBR = hardMap.get(DcMotor.class, "m3");
-        mtrBL = hardMap.get(DcMotor.class, "m4");
+        mtrFR = hardwareMap.get(DcMotor.class, "m2");
+        mtrFL = hardwareMap.get(DcMotor.class, "m1");
+        mtrBR = hardwareMap.get(DcMotor.class, "m3");
+        mtrBL = hardwareMap.get(DcMotor.class, "m4");
 
         mtrFR.setDirection(DcMotor.Direction.REVERSE);
         mtrFL.setDirection(DcMotor.Direction.FORWARD);
         mtrBR.setDirection(DcMotor.Direction.REVERSE);
         mtrBL.setDirection(DcMotor.Direction.FORWARD);
 
+        motors = new DriveTrain(hardwareMap, telemetry);
+        gyro = new Gyro(hardwareMap, telemetry);
+        jewel = new Jewel(hardwareMap, telemetry);
+        servos = new Servos(hardwareMap);
 
+        ssRange = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "ssRange");
+        ssLimitSwitch = hardwareMap.get(DigitalChannel.class, "ssLimitSwitch");
+
+        vuMark = new VuMarkRecognition(this.hardwareMap, this.telemetry);
+
+        servos.autoInit();
+
+        jewel.jewelStow();
+
+        telemetry.addData("Status", "DriveTrain Initialized");
+        telemetry.update();
     }
 
+    /*
+    public void moveBySensor(double arg1, double arg2) {
+        while(!sensor.isDone() && opModeIsActive()) {
+            motors.moveTo(arg1, arg2);
+        }
+    }
+     */
     public void SetEncoderOff() {
         //mtrFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         mtrFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -77,30 +103,32 @@ public class DriveTrain {
         mtrBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         mtrBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
-
-    public void MoveTo(double degree, double power){
-        double degreeRad = Math.toRadians(degree); // Convert to radians
-        double cs = Math.cos(degreeRad);
-        double sn = Math.sin(degreeRad);
-
-        double fr = power * (-sn + cs);
-        double fl = power * (sn + cs);
-        double br = power * (sn + cs);
-        double bl = power * (-sn + cs);
-
-        mtrFL.setPower(fl);
-        mtrFR.setPower(fr);
-        mtrBL.setPower(bl);
-        mtrBR.setPower(br);
+    public void MoveToByTime(long time, double direction, double power) {
+        motors.MoveTo(direction, power);
+        sleep(time);
+        motors.stopMotors();
     }
-   /* public void MoveToByEncoder(double distance, double degree, double power) {
+
+    public void MoveToByRange(double distance, double direction, double power) {
+        motors.MoveTo(direction,power);
+        while (ssRange.cmUltrasonic() > distance && opModeIsActive()) {
+        }
+        motors.stopMotors();
+    }
+
+    public void MoveToBySwitch(double direction, double power) {
+        motors.MoveTo(direction,power);
+        while (!ssLimitSwitch.getState() && opModeIsActive()) {
+        }
+        motors.stopMotors();
+
+    }
+
+    public void MoveToByEncoder(double distance, double degree, double power) {
         double degreeRad = Math.toRadians(degree); // Convert to radians
         double cs = Math.cos(degreeRad);
         double sn = Math.sin(degreeRad);
-        // make sure power less than 1 below
-        if (power > 0.7) {
-            power = 0.7;
-        }
+
         double rightFrontPower = power * (-sn + cs);
         double leftFrontPower = power * (sn + cs);
         double rightRearPower = power * (sn + cs);
@@ -131,13 +159,11 @@ public class DriveTrain {
         mtrBR.setTargetPosition(rightRearEndPos);
         mtrBL.setTargetPosition(leftRearEndPos);
         // run until the end of the match (driver presses STOP)
-        while (mtrFR.isBusy() || mtrFL.isBusy() || mtrBR.isBusy() || mtrBL.isBusy()) {
+        while ((mtrFR.isBusy() || mtrFL.isBusy() || mtrBR.isBusy() || mtrBL.isBusy()) && opModeIsActive()) {
             //keep running
-
         }
-        stopMotors();
+        motors.stopMotors();
     }
-
     public void Turn(double TurnDegree, Gyro gyro) {
         // clock is negative; anti-clock positive degree
         // Maximum degree is 180
@@ -213,144 +239,16 @@ public class DriveTrain {
             mtrFR.setPower(rightPower);
             mtrBR.setPower(rightPower);
 
-            tele.addData("Left Power", leftPower);
-            tele.addData("right Power", rightPower);
-            tele.addData("beginDegree", beginDegree);
-            tele.addData("CurrentDegree", currentDegree);
-            tele.addData("angleDiff", angleDiff);
-            tele.update();
+            telemetry.addData("Left Power", leftPower);
+            telemetry.addData("right Power", rightPower);
+            telemetry.addData("beginDegree", beginDegree);
+            telemetry.addData("CurrentDegree", currentDegree);
+            telemetry.addData("angleDiff", angleDiff);
+            telemetry.update();
         }
-        stopMotors();
+        motors.stopMotors();
 
-        tele.addData("Loop Done-Angle", gyro.getZDegree());
-        tele.update();
+        telemetry.addData("Loop Done-Angle", gyro.getZDegree());
+        telemetry.update();
     }
-/*
-    public void MoveToByTime(long time, double direction, double power) {
-        double degreeRad = Math.toRadians(direction); // Convert to radians
-        double cs = Math.cos(degreeRad);
-        double sn = Math.sin(degreeRad);
-
-        double fr = power * (-sn + cs);
-        double fl = power * (sn + cs);
-        double br = power * (sn + cs);
-        double bl = power * (-sn + cs);
-
-        mtrFL.setPower(fl);
-        mtrFR.setPower(fr);
-        mtrBL.setPower(bl);
-        mtrBR.setPower(br);
-
-        sleep(time);
-
-        stopMotors();
-    }
-
-    public void MoveToByRange(double distance, double direction, double power) {
-        double degreeRad = Math.toRadians(direction); // Convert to radians
-        double cs = Math.cos(degreeRad);
-        double sn = Math.sin(degreeRad);
-
-        double fr = power * (-sn + cs);
-        double fl = power * (sn + cs);
-        double br = power * (sn + cs);
-        double bl = power * (-sn + cs);
-
-        mtrFL.setPower(fl);
-        mtrFR.setPower(fr);
-        mtrBL.setPower(bl);
-        mtrBR.setPower(br);
-
-        while (ssRange.cmUltrasonic() > distance) {
-        }
-
-        stopMotors();
-    }
-
-    public void MoveToBySwitch(double direction, double power) {
-        double degreeRad = Math.toRadians(direction); // Convert to radians
-        double cs = Math.cos(degreeRad);
-        double sn = Math.sin(degreeRad);
-
-        double fr = power * (-sn + cs);
-        double fl = power * (sn + cs);
-        double br = power * (sn + cs);
-        double bl = power * (-sn + cs);
-
-        while (!ssLimitSwitch.getState()){
-            mtrFL.setPower(fl);
-            mtrFR.setPower(fr);
-            mtrBL.setPower(bl);
-            mtrBR.setPower(br);
-        }
-
-        stopMotors();
-    }
-*/
-    public void stopMotors() {
-        mtrFR.setPower(0);
-        mtrFL.setPower(0);
-        mtrBR.setPower(0);
-        mtrBL.setPower(0);
-    }
-
-    /*public void Turn_old(double TurnDegree, Gyro gyro) {
-        // clock is negative; anti-clock positive degree
-        // Maximum degree is 180
-        if (TurnDegree > 180){
-            TurnDegree = 180;
-        }
-        if (TurnDegree < -180){
-            TurnDegree = -180;
-        }
-
-        double MaxPower = 0.5;
-        double correctDegree = 0;
-        Orientation angles;
-        double beginDegree;
-        double target;
-        double angleDiff;
-
-        SetEncoderOff();
-        gyro.ResetAngle();
-
-        beginDegree = gyro.getZDegree();
-
-        if (TurnDegree < 0 ) {
-            correctDegree = - correctDegree;
-        }
-        target = beginDegree + TurnDegree - correctDegree;
-
-        angleDiff=TurnDegree;
-        while ( abs(angleDiff) > 1 ) {
-            double leftPower;
-            double rightPower;
-            double currentDeg =gyro.getZDegree();
-            angleDiff = (currentDeg - target);
-            double drive;
-            drive = (angleDiff)/100.0;
-
-            if (abs(drive)> MaxPower ){
-                drive = MaxPower * abs(drive)/drive;
-            }
-
-            leftPower    = Range.clip(drive, -1.0, 1.0) ;
-            rightPower   = Range.clip(-drive, -1.0, 1.0) ;
-            mtrFL.setPower(leftPower);
-            mtrBL.setPower(leftPower);
-            mtrFR.setPower(rightPower);
-            mtrBR.setPower(rightPower);
-
-            tele.addData("Left Power",  leftPower);
-            tele.addData("right Power",  rightPower);
-            tele.addData("beginDegree", beginDegree);
-            tele.addData("Degree",currentDeg);
-            tele.addData("angleDiff",angleDiff);
-            tele.update();
-        }
-        stopMotors();
-
-        tele.addData("Loop Done-Angle",gyro.getZDegree());
-        tele.update();
-    }*/
 }

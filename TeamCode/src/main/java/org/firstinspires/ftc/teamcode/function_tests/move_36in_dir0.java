@@ -17,7 +17,7 @@ public class move_36in_dir0 extends LinearOpMode {
 
         waitForStart();
 
-        motors.MoveTo(36,0,.5);
+        motors.MoveToByEncoder(36,0,.5);
 
     }
 }

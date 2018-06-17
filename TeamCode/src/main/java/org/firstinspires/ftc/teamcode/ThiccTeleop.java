@@ -21,6 +21,11 @@ public class ThiccTeleop extends OpMode {
 
     DcMotor mtrRelic;
 
+    boolean ScoringPositionActivated = false;
+    boolean isGrabbed = false;
+    boolean isPressed = false;
+    boolean bumperisPressed = false;
+
     @Override
     public void init() {
         drivebase = new HolonomicDrivebase(hardwareMap);
@@ -39,9 +44,6 @@ public class ThiccTeleop extends OpMode {
 
     @Override
     public void loop() {
-        boolean ScoringPositionActivated = false;
-        boolean isGrabbed = false;
-        boolean isPressed = false;
 
         // ----- drive code -----
         // square inputs; this makes smaller movements easier
@@ -51,41 +53,40 @@ public class ThiccTeleop extends OpMode {
 
         drivebase.driveArcade(x1, y1, x2, 1);
 
-
         // ----- intake ------
         mtrIntakeLeft.setPower(gamepad1.left_bumper ? -1 : gamepad1.left_trigger);
         mtrIntakeRight.setPower(gamepad1.right_bumper ? -1 : gamepad1.right_trigger);
+
         telemetry.addData("leftCurrent", mtrIntakeLeft.getCurrentDraw());
         telemetry.addData("rightCurrent", mtrIntakeRight.getCurrentDraw());
 
         // ----- relic -----
 
-        if (gamepad2.right_stick_y == 0) {
+        if (gamepad2.right_stick_y == 0)
             mtrRelic.setPower(-.3);
-        } else {
+        else
             mtrRelic.setPower(gamepad2.right_stick_y);
-        }
-
 
         // ----- glyphs -----
+
         mtrGlyphLift.setPower(gamepad2.left_stick_y);
 
-       /* if(gamepad1.right_trigger > .5 ){
-            isPressed = true;
-        }
-        else{
-            isPressed = false;
-        }*/
-
-        if (gamepad1.right_trigger > .5 /*&& !isPressed*/) {
+        if (gamepad1.right_trigger > .5 && !isPressed)
             ScoringPositionActivated = !ScoringPositionActivated;
-        }
+
         servos.setFlipperUp(ScoringPositionActivated);
 
-        if(gamepad1.right_bumper){
+        if(gamepad1.right_trigger > .5 )
+            isPressed = true;
+        else
+            isPressed = false;
+
+        if (gamepad1.right_bumper && !bumperisPressed)
             isGrabbed = !isGrabbed;
-        }
+
         servos.setFlipperGrab(isGrabbed);
+
+        bumperisPressed = gamepad1.right_bumper;
 
     }
 }

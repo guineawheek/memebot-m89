@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class Servos {
     /*
 
@@ -67,6 +69,7 @@ front5: jeweldown 0.23
         svoFlipperTop = hardwareMap.servo.get("svoFlipperTop");
         svoRelicGrab = hardwareMap.servo.get("svoRelicGrab");
         svoRelicPivot = hardwareMap.servo.get("svoRelicPivot");
+
     }
 
     public void init() {
@@ -76,7 +79,15 @@ front5: jeweldown 0.23
         svoJewelPivot.setPosition(JEWEL_PIVOT_CENTER);
         setJewelLiftUp(true);
         setFlipperUp(false);
+
+    }
+    public void autoInit(){
+        svoRelicPivot.setPosition(RELIC_PIVOT_INIT);
         setRelicGrab(false);
+        //have jewels already
+        //
+        setFlipperUp(false);
+        setFlipperGrab(true);
     }
 
     public void setJewelLiftUp(boolean up) {

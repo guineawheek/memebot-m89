@@ -5,9 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.Gyro;
-import org.firstinspires.ftc.teamcode.subsystems.Jewel;
-import org.firstinspires.ftc.teamcode.subsystems.Servos;
-import org.firstinspires.ftc.teamcode.subsystems.VuMarkRecognition;
 
 @Autonomous(name = "12in dir0",group = "a")
 public class move_12in_dir0 extends LinearOpMode {
@@ -20,7 +17,7 @@ public class move_12in_dir0 extends LinearOpMode {
 
         waitForStart();
 
-        motors.MoveTo(12,0,.5);
+        motors.MoveToByEncoder(12,0,.5);
 
     }
 }

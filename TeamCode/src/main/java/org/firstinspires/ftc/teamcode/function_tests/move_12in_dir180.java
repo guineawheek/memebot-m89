@@ -17,7 +17,7 @@ public class move_12in_dir180 extends LinearOpMode {
 
         waitForStart();
 
-        motors.MoveTo(12,180,.5);
+        motors.MoveToByEncoder(12,180,.5);
 
     }
 }
