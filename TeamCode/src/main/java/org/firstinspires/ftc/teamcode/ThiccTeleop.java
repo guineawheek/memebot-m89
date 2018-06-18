@@ -21,11 +21,17 @@ public class ThiccTeleop extends OpMode {
 
     DcMotor mtrRelic;
 
+    /*
     boolean ScoringPositionActivated = false;
     boolean isGrabbed = false;
     boolean isPressed = false;
     boolean bumperisPressed = false;
+    */
+    boolean flipWatch = false;
+    boolean isFlipped = false;
 
+    boolean grabWatch = false;
+    boolean isGrabbed = false;
     @Override
     public void init() {
         drivebase = new HolonomicDrivebase(hardwareMap);
@@ -80,17 +86,45 @@ public class ThiccTeleop extends OpMode {
         else
             mtrRelic.setPower(gamepad2.right_stick_y);
 
+        if (gamepad2.right_trigger > 0.5)
+            servos.setRelicGrab(false);
+        else if (gamepad2.right_bumper)
+            servos.setRelicGrab(true);
+
+        if (gamepad2.left_bumper)
+            servos.setRelicPivotGrab(true);
+        else if (gamepad2.left_trigger > .5)
+            servos.setRelicPivotGrab(false);
         // ----- glyphs -----
 
         mtrGlyphLift.setPower(gamepad2.left_stick_y);
 
-        servos.setFlipperGrab(false); // for now
-        servos.setFlipperUp(false);
+        if (gamepad1.left_trigger > 0.5 && !flipWatch) {
+            isFlipped = !isFlipped;
+            if (isFlipped)
+                isGrabbed = true;
+        }
 
-  /*      if (gamepad1.left_trigger > .5 && !isPressed)
+        if (gamepad1.left_bumper && !grabWatch)
+            isGrabbed = !isGrabbed;
+
+        servos.setFlipperUp(isFlipped);
+        servos.setFlipperGrab(isGrabbed);
+
+        flipWatch = gamepad1.left_trigger > 0.5;
+        grabWatch = gamepad1.left_bumper;
+        /*
+      if (gamepad1.left_trigger > .5 && !isPressed)
             ScoringPositionActivated = !ScoringPositionActivated;
 
-        servos.setFlipperUp(ScoringPositionActivated);
+       if(ScoringPositionActivated){
+           servos.setFlipperGrab(true);//will be true
+           servos.setFlipperUp(true);
+       }
+       else if (!ScoringPositionActivated){
+           servos.setFlipperUp(false);
+       }
+//      servos.setFlipperUp(ScoringPositionActivated);
 
         if(gamepad1.left_trigger > .5 )
             isPressed = true;
@@ -103,6 +137,6 @@ public class ThiccTeleop extends OpMode {
         servos.setFlipperGrab(isGrabbed);
 
         bumperisPressed = gamepad1.right_bumper;
-*/
+        */
     }
 }

@@ -28,12 +28,12 @@ front5: jeweldown 0.23
     public static final double JEWEL_PIVOT_CENTER = 0.57;
     public static final double JEWEL_LIFT_UP = 0.23;
 
-    public static final double RELIC_PIVOT_INIT = 1;
+    public static final double RELIC_PIVOT_INIT = 0.8;
     public static final double RELIC_PIVOT_UP = 0;
-    public static final double RELIC_PIVOT_GRAB = 0.58;
+    public static final double RELIC_PIVOT_GRAB = 0.6;
 
     public static final double RELIC_UNGRAB = 0.57;
-    public static final double RELIC_GRAB = 0.87;
+    public static final double RELIC_GRAB = 1.0;
 
     public static final double FLIPPER_UP = 0.26;
     public static final double FLIPPER_DOWN = 0.77;
@@ -41,7 +41,7 @@ front5: jeweldown 0.23
     public static final double FLIPPER_UNGRAB = 0.57;
     public static final double FLIPPER_GRAB = 0.15;
 
-    public static final double ALIGN_DOWN = 1; //need to test
+    public static final double ALIGN_DOWN = 0; //need to test
     public static final double ALIGN_UP = 0.5;
 
     Servo svoJewelPivot;
@@ -83,11 +83,12 @@ front5: jeweldown 0.23
     }
     public void autoInit(){
         svoRelicPivot.setPosition(RELIC_PIVOT_INIT);
-        setRelicGrab(false);
+        setRelicGrab(true);
         //have jewels already
         //
         setFlipperUp(false);
         setFlipperGrab(true);
+        setAutoAlign(false);
     }
 
     public void setJewelLiftUp(boolean up) {

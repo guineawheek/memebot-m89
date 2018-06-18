@@ -18,11 +18,7 @@ import org.firstinspires.ftc.teamcode.subsystems.VuMarkRecognition;
 @Autonomous(name = "testauton", group = "Autonomous")
 public class TestAuton extends AutonomousOpMode {
     // far red
-    DriveTrain motors = null;
-    Gyro gyro = null;
-    Jewel jewel;
-    Servos servos;
-    VuMarkRecognition vuMark;
+  //  VuMarkRecognition vuMark;
     @Override
     public void runOpMode() {
        /* motors = new DriveTrain(hardwareMap, telemetry);
@@ -41,29 +37,32 @@ public class TestAuton extends AutonomousOpMode {
 */
         initit();
 
-        waitForStart();
-
-        int column = vuMark.getVuMark();
+        int column = 0;
+        while (!isStarted() && !isStopRequested()) {
+            column = vuMark.getVuMark();
+            telemetry.addData("Vumark: ", column);
+            telemetry.update();
+        }
 
         servos.setRelicPivotGrab(false);
 
-        jewel.hitRedJewel(); //all steps of jewels
+        hitBlueJewel(); //all steps of jewels
 
         //all distances unknown
-        MoveToByEncoder(24, 180, .5); //off the stone
-
+        MoveToByEncoder(32, 180, .4); //off the stone
+        if (true) return;
         if (column == 1) //left
-            MoveToByEncoder(22, 270, .5);//19 in
+            MoveToByEncoder(24, 90, .4);//19 in
         else if (column == 3) //right
-            MoveToByEncoder(8, 270, .5);//5 in
+            MoveToByEncoder(10, 90, .4);//5 in
         else //center
-            MoveToByEncoder(15, 270, .5);//12 in
+            MoveToByEncoder(17, 90, .5);//12 in
 
-        MoveToByRange(16/*cm*/,180,.2); //forwards based on range
+        servos.setAutoAlign(true);//raise alignment
 
-        servos.setAutoAlign(true); //raise alignment
+    //   MoveToByRange(16/*cm*/,180,1); //forwards based on range
 
-        MoveToBySwitch(270,.3);//strafe until alignment hit
+        MoveToBySwitch(90,.3);//strafe until alignment hit
 
         sleep (50);
 

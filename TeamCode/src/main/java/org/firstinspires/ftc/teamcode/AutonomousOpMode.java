@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -31,6 +33,12 @@ public abstract class AutonomousOpMode extends LinearOpMode {
     DcMotor mtrBR;
     DcMotor mtrBL;
 
+    Servo svoJewelLift;
+    Servo svoJewelPivot;
+
+    ColorSensor snsColorSensorLeft;
+    ColorSensor snsColorSensorRight;
+
     static final double COUNTS_PER_MOTOR_REV = 498;
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
@@ -39,12 +47,29 @@ public abstract class AutonomousOpMode extends LinearOpMode {
     static final double DRIVE_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
 
+
+//jewel
+    public static final double DOWN_STOW_POS = .1171875; //ready for init
+    public static final double SWING_STOW_POS = .33203125;
+
+    public static final double DOWN_EX_POS = .83984375; //looking for the correct ball
+    public static final double SWING_EX_POS = .60546875;
+
+    public static final double SWING_LEFT = .390625; //swing left or right to knock the jewel off
+    public static final double SWING_RIGHT = .78125;
+
     public void initit() {
 
         mtrFR = hardwareMap.get(DcMotor.class, "m2");
         mtrFL = hardwareMap.get(DcMotor.class, "m1");
         mtrBR = hardwareMap.get(DcMotor.class, "m3");
         mtrBL = hardwareMap.get(DcMotor.class, "m4");
+
+        svoJewelLift = hardwareMap.servo.get("svoJewelLift");
+        svoJewelPivot = hardwareMap.servo.get("svoJewelPivot");
+
+        snsColorSensorLeft = hardwareMap.colorSensor.get("snsColorSensorLeft");
+        snsColorSensorRight = hardwareMap.colorSensor.get("snsColorSensorRight");
 
         mtrFR.setDirection(DcMotor.Direction.REVERSE);
         mtrFL.setDirection(DcMotor.Direction.FORWARD);
@@ -112,13 +137,15 @@ public abstract class AutonomousOpMode extends LinearOpMode {
     public void MoveToByRange(double distance, double direction, double power) {
         motors.MoveTo(direction,power);
         while (snsRange.cmUltrasonic() > distance && opModeIsActive()) {
+            telemetry.addData("snsRange", snsRange.cmUltrasonic());
         }
         motors.stopMotors();
     }
 
     public void MoveToBySwitch(double direction, double power) {
+        SetEncoderOff();
         motors.MoveTo(direction,power);
-        while (!snsLimitSwitch.getState() && opModeIsActive()) {
+        while (snsLimitSwitch.getState() && opModeIsActive()) {
         }
         motors.stopMotors();
 
@@ -129,11 +156,8 @@ public abstract class AutonomousOpMode extends LinearOpMode {
         double cs = Math.cos(degreeRad);
         double sn = Math.sin(degreeRad);
 
-        double rightFrontPower = power * (-sn + cs);
-        double leftFrontPower = power * (sn + cs);
-        double rightRearPower = power * (sn + cs);
-        double leftRearPower = power * (-sn + cs);
 
+        //SetEncoderOff();
         SetEncoderMode();
         double targetCounts = (int) (distance * COUNTS_PER_INCH);
 
@@ -149,6 +173,26 @@ public abstract class AutonomousOpMode extends LinearOpMode {
         int rightRearEndPos = rightRearStartPos + (int) (target * (sn + cs));
         int leftRearEndPos = leftRearStartPos + (int) (target * (-sn + cs));
 
+        /*
+        boolean frontLeft = (int) (target * (sn + cs)) != 0;
+        DcMotor enc = frontLeft? mtrFL : mtrFR;
+        int end = frontLeft ? leftFrontEndPos : rightFrontEndPos;
+        while (Math.abs(enc.getCurrentPosition() - end) > 3 && opModeIsActive()) {
+            double pwr = Range.clip((enc.getCurrentPosition() - end) * 0.002 * power, -power, power);
+
+            telemetry.addData("value", enc.getCurrentPosition());
+            telemetry.addData("target", end);
+            telemetry.addData("dist", enc.getCurrentPosition() - end);
+            telemetry.update();
+        }
+        motors.stopMotors();
+        */
+        double pwr = power;
+        double rightFrontPower = pwr * (-sn + cs);
+        double leftFrontPower = pwr * (sn + cs);
+        double rightRearPower = pwr * (sn + cs);
+        double leftRearPower = pwr * (-sn + cs);
+
         mtrFR.setPower(rightFrontPower);
         mtrFL.setPower(leftFrontPower);
         mtrBR.setPower(rightRearPower);
@@ -159,10 +203,11 @@ public abstract class AutonomousOpMode extends LinearOpMode {
         mtrBR.setTargetPosition(rightRearEndPos);
         mtrBL.setTargetPosition(leftRearEndPos);
         // run until the end of the match (driver presses STOP)
-        while ((mtrFR.isBusy() || mtrFL.isBusy() || mtrBR.isBusy() || mtrBL.isBusy()) && opModeIsActive()) {
-            //keep running
-        }
+        //while ((Math.abs(mtrFL.getCurrentPosition() - end) > 100 )&& opModeIsActive()) {}
+        while (mtrFL.isBusy() && opModeIsActive()) {}
+        /*|| mtrFL.isBusy() || mtrBR.isBusy() || mtrBL.isBusy())*/
         motors.stopMotors();
+
     }
     public void Turn(double TurnDegree, Gyro gyro) {
         // clock is negative; anti-clock positive degree
@@ -200,7 +245,7 @@ public abstract class AutonomousOpMode extends LinearOpMode {
         runtime.startTime();
 
         angleDiff = TurnDegree;
-        while (abs(angleDiff) > 1 && runtime.seconds() < maxTime) {
+        while (abs(angleDiff) > 1 && runtime.seconds() < maxTime && opModeIsActive()) {
             double leftPower;
             double rightPower;
             currentDegree = gyro.getZDegree();
@@ -251,4 +296,114 @@ public abstract class AutonomousOpMode extends LinearOpMode {
         telemetry.addData("Loop Done-Angle", gyro.getZDegree());
         telemetry.update();
     }
+
+   //jewel
+
+
+    public void ledOn(boolean x) {
+        snsColorSensorLeft.enableLed(x);
+        snsColorSensorRight.enableLed(x);
+    }
+
+    public void jewelStow() {
+        svoJewelLift.setPosition(DOWN_STOW_POS);
+        svoJewelPivot.setPosition(SWING_STOW_POS);
+    }
+
+    public void jewelExplore() {
+        svoJewelPivot.setPosition(SWING_EX_POS);
+        svoJewelLift.setPosition(DOWN_EX_POS);
+    }
+
+    public void swingL() {
+        svoJewelPivot.setPosition(SWING_LEFT);
+    }
+
+    public void swingR() {
+        svoJewelPivot.setPosition(SWING_RIGHT);
+    }
+
+    public void jewelAction(boolean lb, boolean lr, boolean rb, boolean rr) { //red version (if we want blue, rb,rr,lb,lr)
+        if (lb && lr && rb && rr) {          // color sensors all fail
+            swingL();
+            swingR();
+            sleepC(100);
+        } else if (lb && lr) { //left sensor fails
+            if (rb) {
+                swingL(); //   red-blue
+                sleepC(100);
+            } else {
+                swingR(); //    blue-red
+                sleepC(100);
+            }
+        } else if (rb && rr) { //right sensor fails
+            if (lb) {
+                swingR(); //     blue-red
+                sleepC(100);
+            } else {
+                swingL(); //     red-blue
+                sleepC(100);
+            }
+        } else if ((rb && lb) || (lr && rr)) { //sensors both working but giving opposite readings
+            // do nothing
+        } else if (rb) { //both sensors are reading
+            swingL();//     red-blue
+            sleepC(100);
+        } else {
+            swingR(); //       blue-red
+            sleepC(100);
+        }
+    }
+
+    public boolean rr() {
+        sleepC(10);
+        return snsColorSensorRight.red() >= snsColorSensorRight.blue();
+    }
+
+    public boolean lr() {
+        sleepC(10);
+        return snsColorSensorLeft.red() >= snsColorSensorLeft.blue();
+    }
+
+    public boolean rb() {
+        sleepC(10);
+        return snsColorSensorRight.red() <= snsColorSensorRight.blue();
+    }
+
+    public boolean lb() {
+        sleepC(10);
+        return snsColorSensorLeft.blue() >= snsColorSensorLeft.red();
+    }
+
+    public void sleepC(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void hitBallsRedisTru(boolean color) {
+        if (color) {
+            jewelAction(lb(), lr(), rb(), rr());
+        } else {
+            jewelAction(rb(), rr(), lb(), lr());
+        }
+    }
+    public void hitRedJewel() {
+        ledOn(true);
+        jewelExplore();
+        sleep(1000);
+        hitBallsRedisTru(true);
+        jewelStow();
+    }
+
+    public void hitBlueJewel() {
+        ledOn(true);
+        jewelExplore();
+        sleep(1000);
+        hitBallsRedisTru(false);
+        jewelStow();
+    }
+
 }
