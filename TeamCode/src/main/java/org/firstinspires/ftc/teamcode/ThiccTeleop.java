@@ -52,7 +52,7 @@ public class ThiccTeleop extends OpMode {
     public void loop() {
 
         // ----- drive code -----
-        // square inputs; this makes smaller movements easier
+        // square inputs; this makes smaller movements easier - le
         double x1 = Math.copySign(Math.pow(gamepad1.left_stick_x, 1), gamepad1.left_stick_x);
         double y1 = Math.copySign(Math.pow(gamepad1.left_stick_y, 1), -gamepad1.left_stick_y);
         double x2 = Math.copySign(Math.pow(gamepad1.right_stick_x, 1), gamepad1.right_stick_x);
@@ -60,7 +60,7 @@ public class ThiccTeleop extends OpMode {
         drivebase.driveArcade(x1, y1, x2, 1);
 
         // ----- intake ------
-       // mtrIntakeLeft.setPower(gamepad1.left_bumper ? -1 : gamepad1.left_trigger);
+        //mtrIntakeLeft.setPower(gamepad1.left_bumper ? -1 : gamepad1.left_trigger);
         //mtrIntakeRight.setPower(gamepad1.right_bumper ? -1 : gamepad1.right_trigger);
 
         if(gamepad1.right_trigger > .5){
@@ -113,6 +113,8 @@ public class ThiccTeleop extends OpMode {
 
         flipWatch = gamepad1.left_trigger > 0.5;
         grabWatch = gamepad1.left_bumper;
+
+
         /*
       if (gamepad1.left_trigger > .5 && !isPressed)
             ScoringPositionActivated = !ScoringPositionActivated;
