@@ -155,6 +155,14 @@ public abstract class AutonomousOpMode extends LinearOpMode {
 
     }
 
+    public void MoveStraight(double distance, double degree, double power) {
+        double degreeRad = Math.toRadians(degree); // Convert to radians
+        double cs = Math.cos(degreeRad);
+        double sn = Math.sin(degreeRad);
+        double target = (distance * COUNTS_PER_INCH) * (sn + cs);
+
+
+    }
     public void MoveToByEncoder(double distance, double degree, double power) {
         double degreeRad = Math.toRadians(degree); // Convert to radians
         double cs = Math.cos(degreeRad);
