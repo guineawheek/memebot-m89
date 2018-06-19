@@ -20,43 +20,43 @@ import static java.lang.Math.abs;
 
 public abstract class AutonomousOpMode extends LinearOpMode {
 
-    DriveTrain motors;
-    Gyro gyro = null;
-    Jewel jewel;
-    Servos servos;
-    VuMarkRecognition vuMark;
-    ModernRoboticsI2cRangeSensor snsRange;
-    DigitalChannel snsLimitSwitch; //port 1
+    public DriveTrain motors;
+    public Gyro gyro;
+    public Jewel jewel;
+    public Servos servos;
+    public VuMarkRecognition vuMark;
+    public ModernRoboticsI2cRangeSensor snsRange;
+    public DigitalChannel snsLimitSwitch; //port 1
+    public DcMotor mtrRelic;
 
-    DcMotor mtrFR;
-    DcMotor mtrFL;
-    DcMotor mtrBR;
-    DcMotor mtrBL;
+    public DcMotor mtrFR;
+    public DcMotor mtrFL;
+    public DcMotor mtrBR;
+    public DcMotor mtrBL;
+    public Servo svoJewelLift;
+    public Servo svoJewelPivot;
 
-    Servo svoJewelLift;
-    Servo svoJewelPivot;
+    public ColorSensor snsColorSensorLeft;
+    public ColorSensor snsColorSensorRight;
 
-    ColorSensor snsColorSensorLeft;
-    ColorSensor snsColorSensorRight;
-
-    static final double COUNTS_PER_MOTOR_REV = 498;
-    static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
-    static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
-    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+    public static final double COUNTS_PER_MOTOR_REV = 498;
+    public static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
+    public static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
+    public static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double DRIVE_SPEED = 0.6;
-    static final double TURN_SPEED = 0.5;
+    public static final double DRIVE_SPEED = 0.6;
+    public static final double TURN_SPEED = 0.5;
 
 
-//jewel
-    public static final double DOWN_STOW_POS = .1171875; //ready for init
-    public static final double SWING_STOW_POS = .33203125;
+    //jewel
+    public static final double DOWN_STOW_POS = .12; //ready for init
+    public static final double SWING_STOW_POS = .48;
 
-    public static final double DOWN_EX_POS = .83984375; //looking for the correct ball
-    public static final double SWING_EX_POS = .60546875;
+    public static final double DOWN_EX_POS = .84; //looking for the correct ball
+    public static final double SWING_EX_POS = .58;
 
-    public static final double SWING_LEFT = .390625; //swing left or right to knock the jewel off
-    public static final double SWING_RIGHT = .78125;
+    public static final double SWING_LEFT = .22; //swing left or right to knock the jewel off
+    public static final double SWING_RIGHT = .83;
 
     public void initit() {
 
@@ -67,6 +67,8 @@ public abstract class AutonomousOpMode extends LinearOpMode {
 
         svoJewelLift = hardwareMap.servo.get("svoJewelLift");
         svoJewelPivot = hardwareMap.servo.get("svoJewelPivot");
+
+        mtrRelic = hardwareMap.dcMotor.get("mtrRelic");
 
         snsColorSensorLeft = hardwareMap.colorSensor.get("snsColorSensorLeft");
         snsColorSensorRight = hardwareMap.colorSensor.get("snsColorSensorRight");
@@ -128,14 +130,16 @@ public abstract class AutonomousOpMode extends LinearOpMode {
         mtrBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         mtrBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
+
     public void MoveToByTime(long time, double direction, double power) {
+        SetEncoderOff();
         motors.MoveTo(direction, power);
         sleep(time);
         motors.stopMotors();
     }
 
     public void MoveToByRange(double distance, double direction, double power) {
-        motors.MoveTo(direction,power);
+        motors.MoveTo(direction, power);
         while (snsRange.cmUltrasonic() > distance && opModeIsActive()) {
             telemetry.addData("snsRange", snsRange.cmUltrasonic());
         }
@@ -144,7 +148,7 @@ public abstract class AutonomousOpMode extends LinearOpMode {
 
     public void MoveToBySwitch(double direction, double power) {
         SetEncoderOff();
-        motors.MoveTo(direction,power);
+        motors.MoveTo(direction, power);
         while (snsLimitSwitch.getState() && opModeIsActive()) {
         }
         motors.stopMotors();
@@ -204,11 +208,13 @@ public abstract class AutonomousOpMode extends LinearOpMode {
         mtrBL.setTargetPosition(leftRearEndPos);
         // run until the end of the match (driver presses STOP)
         //while ((Math.abs(mtrFL.getCurrentPosition() - end) > 100 )&& opModeIsActive()) {}
-        while (mtrFL.isBusy() && opModeIsActive()) {}
+        while (mtrFL.isBusy() && opModeIsActive()) {
+        }
         /*|| mtrFL.isBusy() || mtrBR.isBusy() || mtrBL.isBusy())*/
         motors.stopMotors();
 
     }
+
     public void Turn(double TurnDegree, Gyro gyro) {
         // clock is negative; anti-clock positive degree
         // Maximum degree is 180
@@ -297,8 +303,7 @@ public abstract class AutonomousOpMode extends LinearOpMode {
         telemetry.update();
     }
 
-   //jewel
-
+    //jewel
 
     public void ledOn(boolean x) {
         snsColorSensorLeft.enableLed(x);
@@ -390,6 +395,7 @@ public abstract class AutonomousOpMode extends LinearOpMode {
             jewelAction(rb(), rr(), lb(), lr());
         }
     }
+
     public void hitRedJewel() {
         ledOn(true);
         jewelExplore();

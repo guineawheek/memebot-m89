@@ -1,10 +1,11 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Autonomouses;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.AutonomousOpMode;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.Gyro;
 import org.firstinspires.ftc.teamcode.subsystems.Jewel;
@@ -15,8 +16,8 @@ import org.firstinspires.ftc.teamcode.subsystems.VuMarkRecognition;
  * Created by xiax on 4/23/2018.
  */
 
-@Autonomous(name = "testauton", group = "Autonomous")
-public class TestAuton extends AutonomousOpMode {
+@Autonomous(name = "Far Red", group = "Autonomous")
+public class FarRed extends AutonomousOpMode {
     // far red
   //  VuMarkRecognition vuMark;
     @Override
@@ -49,14 +50,15 @@ public class TestAuton extends AutonomousOpMode {
         hitBlueJewel(); //all steps of jewels
 
         //all distances unknown
-        MoveToByEncoder(32, 180, .4); //off the stone
-        if (true) return;
+        MoveToByEncoder(29.5, 180, .3); //off the stone
+
         if (column == 1) //left
-            MoveToByEncoder(24, 90, .4);//19 in
+            MoveToByEncoder(18.5, 90, .3);//19 in
         else if (column == 3) //right
-            MoveToByEncoder(10, 90, .4);//5 in
+            //MoveToByEncoder(10, 90, .3);//5 in
+            opModeIsActive();
         else //center
-            MoveToByEncoder(17, 90, .5);//12 in
+            MoveToByEncoder(10, 90, .3);//12 in
 
         servos.setAutoAlign(true);//raise alignment
 
@@ -69,10 +71,11 @@ public class TestAuton extends AutonomousOpMode {
         servos.setAutoAlign(false); //lower alignment
 
         servos.setFlipperUp(true);//deposit
-        sleep (100);
+        sleep (1000);
+
         servos.setFlipperGrab(false);
         sleep(50);
-
+       // if (true) return;
         MoveToByTime(500, 0, .3); //little nudge for block
         MoveToByTime(1000, 180, .5);
 

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import java.util.Arrays;
@@ -16,6 +17,11 @@ public class HolonomicDrivebase {
         mtrFR = hardwareMap.dcMotor.get("m2");
         mtrBL = hardwareMap.dcMotor.get("m4");
         mtrBR = hardwareMap.dcMotor.get("m3");
+
+        mtrFR.setDirection(DcMotor.Direction.FORWARD);
+        mtrFL.setDirection(DcMotor.Direction.FORWARD);
+        mtrBR.setDirection(DcMotor.Direction.FORWARD);
+        mtrBL.setDirection(DcMotor.Direction.FORWARD);
     }
 
     public void driveArcade(double x1, double y1, double x2, double factor) {

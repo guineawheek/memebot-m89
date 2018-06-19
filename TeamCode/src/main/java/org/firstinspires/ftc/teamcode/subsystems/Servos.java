@@ -28,21 +28,27 @@ front5: jeweldown 0.23
     public static final double JEWEL_PIVOT_CENTER = 0.57;
     public static final double JEWEL_LIFT_UP = 0.23;
 
-    public static final double RELIC_PIVOT_INIT = 0.8;
+    public static final double RELIC_PIVOT_INIT = 1;
     public static final double RELIC_PIVOT_UP = 0;
     public static final double RELIC_PIVOT_GRAB = 0.6;
 
     public static final double RELIC_UNGRAB = 0.57;
     public static final double RELIC_GRAB = 1.0;
 
-    public static final double FLIPPER_UP = 0.26;
-    public static final double FLIPPER_DOWN = 0.77;
+    public static final double FLIPPER_UP = 0;
+    public static final double FLIPPER_DOWN = 0.555;
 
     public static final double FLIPPER_UNGRAB = 0.57;
     public static final double FLIPPER_GRAB = 0.15;
 
     public static final double ALIGN_DOWN = 0; //need to test
     public static final double ALIGN_UP = 0.5;
+
+    public static final double FLIPPER_UNGRAB_RIGHT = .65;
+    public static final double FLIPPER_GRAB_RIGHT = .85;
+
+    public static final double FLIPPER_UNGRAB_LEFT = .4;
+    public static final double FLIPPER_GRAB_LEFT = .1;
 
     Servo svoJewelPivot;
     Servo svoJewelLift;
@@ -51,10 +57,15 @@ front5: jeweldown 0.23
     Servo svoRelicGrab;
 
     Servo svoFlipperFlip;
-    Servo svoFlipperTop;
-    Servo svoFlipperBottom;
+ //   Servo svoFlipperTop;
+ //   Servo svoFlipperBottom;
+
+    Servo svoFlipperLeft;
+    Servo svoFlipperRight;
 
     Servo svoAutoAlign;
+
+
 
 
     public Servos(HardwareMap hardwareMap) {
@@ -63,10 +74,13 @@ front5: jeweldown 0.23
         svoJewelLift = hardwareMap.servo.get("svoJewelLift");
         svoJewelPivot = hardwareMap.servo.get("svoJewelPivot");
 
-        svoFlipperBottom = hardwareMap.servo.get("svoFlipperBottom");
+        //svoFlipperBottom = hardwareMap.servo.get("svoFlipperBottom");
+        //svoFlipperTop = hardwareMap.servo.get("svoFlipperTop");
         svoFlipperFlip = hardwareMap.servo.get("svoFlipperFlip");
 
-        svoFlipperTop = hardwareMap.servo.get("svoFlipperTop");
+        svoFlipperLeft = hardwareMap.servo.get("svoFlipperLeft");
+        svoFlipperRight = hardwareMap.servo.get("svoFlipperRight");
+
         svoRelicGrab = hardwareMap.servo.get("svoRelicGrab");
         svoRelicPivot = hardwareMap.servo.get("svoRelicPivot");
 
@@ -76,7 +90,8 @@ front5: jeweldown 0.23
 
         setRelicPivotGrab(false); // unworkable for auton, here as a temp
         setRelicGrab(false);
-        svoJewelPivot.setPosition(JEWEL_PIVOT_CENTER);
+       // svoJewelPivot.setPosition(JEWEL_PIVOT_CENTER);
+        stowJewels();
         setJewelLiftUp(true);
         setFlipperUp(false);
 
@@ -102,6 +117,10 @@ front5: jeweldown 0.23
 
         svoJewelLift.setPosition(up ? JEWEL_LIFT_UP : 0.57);
     }
+    public void stowJewels(){
+        svoJewelLift.setPosition(.1171875);
+        svoJewelPivot.setPosition(.33203125);
+    }
 
     public void setRelicPivotGrab(boolean isInGrabPosition) {
         svoRelicPivot.setPosition(isInGrabPosition ? RELIC_PIVOT_GRAB : RELIC_PIVOT_UP);
@@ -116,9 +135,14 @@ front5: jeweldown 0.23
     }
 
     public void setFlipperGrab(boolean grab) {
-        svoFlipperTop.setPosition(grab ? FLIPPER_GRAB : FLIPPER_UNGRAB);
-        svoFlipperBottom.setPosition(grab ? FLIPPER_GRAB : FLIPPER_UNGRAB);
+        //svoFlipperTop.setPosition(grab ? FLIPPER_GRAB : FLIPPER_UNGRAB);
+       // svoFlipperBottom.setPosition(grab ? FLIPPER_GRAB : FLIPPER_UNGRAB);
+
+        svoFlipperLeft.setPosition(grab ? FLIPPER_GRAB_LEFT : FLIPPER_UNGRAB_LEFT);
+        svoFlipperRight.setPosition(grab ? FLIPPER_GRAB_RIGHT : FLIPPER_UNGRAB_RIGHT);
     }
+
+
     public void setAutoAlign(boolean aligning){
         svoAutoAlign.setPosition(aligning ? ALIGN_UP : ALIGN_DOWN);
     }
