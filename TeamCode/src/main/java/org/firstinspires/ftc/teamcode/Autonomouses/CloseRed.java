@@ -27,19 +27,22 @@ public class CloseRed extends AutonomousOpMode {
 
         servos.setRelicPivotGrab(false);
 
-        hitBlueJewel(); //all steps of jewels
+     hitBlueJewel(); //all steps of jewels
 
         //all distances unknown
         MoveToByEncoder(20, 180, .3); //off the stone
 
         Turn(-90, gyro);
 
+        MoveToByEncoder(7,180,.3);
+
         if (column == 1) //left
-            MoveToByEncoder(20, 90, .3);//19 in
+            MoveToByEncoder(14.5, 90, .3);//19 in
         else if (column == 3) //right
-            opModeIsActive();
+            MoveToByEncoder(3, 330,.3);
+            //opModeIsActive();
         else //center
-            MoveToByEncoder(10, 90, .3);//12 in
+            MoveToByEncoder(4, 90, .5);//12 in
 
         servos.setAutoAlign(true);//raise alignment
 
@@ -57,12 +60,15 @@ public class CloseRed extends AutonomousOpMode {
         servos.setFlipperGrab(false);
         sleep(50);
         // if (true) return;
-        MoveToByTime(500, 0, .3); //little nudge for block
-        MoveToByTime(1000, 180, .5);
+        MoveToByTime(700, 0, .3); //little nudge for block
 
-        servos.setFlipperUp(false);
+        MoveToByTime(1100, 180, .5);
+
+
 
         MoveToByEncoder(5, 0, .5); //back out - maybe for more? - park in box
+
+        servos.setFlipperUp(false);
 
     }
 }

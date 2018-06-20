@@ -42,7 +42,7 @@ front5: jeweldown 0.23
     public static final double FLIPPER_GRAB = 0.15;
 
     public static final double ALIGN_DOWN = 0; //need to test
-    public static final double ALIGN_UP = 0.5;
+    public static final double ALIGN_UP = 0.55;
 
     public static final double FLIPPER_UNGRAB_RIGHT = .65;
     public static final double FLIPPER_GRAB_RIGHT = .85;
