@@ -25,7 +25,7 @@ front4: flipgripfront 0.57/0.1 (0.3?) grab
 front5: jeweldown 0.23
      */
 
-    public static final double JEWEL_PIVOT_CENTER = 0.57;
+    public static final double JEWEL_PIVOT_CENTER = 0.57; //not used
     public static final double JEWEL_LIFT_UP = 0.23;
 
     public static final double RELIC_PIVOT_INIT = 1;
@@ -36,9 +36,9 @@ front5: jeweldown 0.23
     public static final double RELIC_GRAB = 1.0;
 
     public static final double FLIPPER_UP = 0;
-    public static final double FLIPPER_DOWN = 0.555;
+    public static final double FLIPPER_DOWN = 0.553;
 
-    public static final double FLIPPER_UNGRAB = 0.57;
+    public static final double FLIPPER_UNGRAB = 0.57; // not used
     public static final double FLIPPER_GRAB = 0.15;
 
     public static final double ALIGN_DOWN = 0; //need to test

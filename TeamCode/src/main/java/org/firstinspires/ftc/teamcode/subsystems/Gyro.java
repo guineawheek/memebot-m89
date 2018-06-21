@@ -12,13 +12,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 public class Gyro {HardwareMap hardMap;
     Telemetry tele;
 
-    BNO055IMU imu;
+    public BNO055IMU imu;
     BNO055IMU.Parameters parameters;
 
     public Gyro(HardwareMap hMap, Telemetry telemetry) {
 
         tele = telemetry;
-        hardMap= hMap;
+        hardMap = hMap;
 
         parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
@@ -39,7 +39,7 @@ public class Gyro {HardwareMap hardMap;
     }
     public double getZDegree(){
         double ZDegree;
-        ZDegree =imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+        ZDegree = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
         return ZDegree;
     }
 }

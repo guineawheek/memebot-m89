@@ -39,34 +39,14 @@ public class FarBlue extends AutonomousOpMode {
         Turn(180,gyro);
 
         if (column == 1) //left
-            MoveToByEncoder(10, 270, .3);//19 in
+            MoveToByEncoder(18, 270, .3);//19 in
         else if (column == 3) //right
-            MoveToByEncoder(32, 270, .3);//5 in
+            MoveToByEncoder(42, 270, .3);//5 in
         else //center
-            MoveToByEncoder(18.5, 270, .3);//12 in
+            MoveToByEncoder(26.75, 270, .3);//25?
 
-        servos.setAutoAlign(true);//raise alignment
+        alignCryptoSequence();
 
-    //   MoveToByRange(16/*cm*/,180,1); //forwards based on range
-
-        MoveToBySwitch(90,.3);//strafe until alignment hit
-
-        sleep (50);
-
-        servos.setAutoAlign(false); //lower alignment
-
-        servos.setFlipperUp(true);//deposit
-        sleep (1000);
-
-        servos.setFlipperGrab(false);
-        sleep(50);
-       // if (true) return;
-        MoveToByTime(500, 0, .3); //little nudge for block
-        MoveToByTime(1000, 180, .5);
-
-        servos.setFlipperUp(false);
-
-        MoveToByEncoder(5,0,.5); //back out - maybe for more? - park in box
-
+        depositGlyphNormal();
     }
 }

@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Jewel;
 
 @Autonomous(name = "JewelTestRed",group = "a")
 public class jewelTestRed extends AutonomousOpMode {
-    Jewel jewel;
+
     @Override
     public void runOpMode() {
         jewel = new Jewel(hardwareMap,telemetry);
@@ -19,7 +19,7 @@ public class jewelTestRed extends AutonomousOpMode {
 
         waitForStart();
 
-        jewel.hitRedJewel();
+        hitRedJewel();
 
     }
 }

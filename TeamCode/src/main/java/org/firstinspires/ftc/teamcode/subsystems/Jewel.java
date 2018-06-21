@@ -19,11 +19,11 @@ public class Jewel {
 
     //all constants need testing
 
-    public static final double DOWN_STOW_POS = .1171875; //ready for init
-    public static final double SWING_STOW_POS = .33203125;
+    public static final double DOWN_STOW_POS = .21; //ready for init
+    public static final double SWING_STOW_POS = .36;
 
     public static final double DOWN_EX_POS = .83984375; //looking for the correct ball
-    public static final double SWING_EX_POS = .60546875;
+    public static final double SWING_EX_POS = .58;
 
     public static final double SWING_LEFT = .390625; //swing left or right to knock the jewel off
     public static final double SWING_RIGHT = .78125;
@@ -65,32 +65,49 @@ public class Jewel {
     public void jewelAction(boolean lb, boolean lr, boolean rb, boolean rr) { //red version (if we want blue, rb,rr,lb,lr)
         if (lb && lr && rb && rr) {          // color sensors all fail
             swingL();
+            sleep(2000);
             swingR();
-            sleepC(100);
+            sleep(100);
+            telemetry.addData("Place", "1");
+            telemetry.update();
         } else if (lb && lr) { //left sensor fails
             if (rb) {
                 swingL(); //   red-blue
                 sleepC(100);
+                telemetry.addData("Place", "2");
+                telemetry.update();
             } else {
                 swingR(); //    blue-red
                 sleepC(100);
+                telemetry.addData("Place", "3");
+                telemetry.update();
             }
         } else if (rb && rr) { //right sensor fails
             if (lb) {
                 swingR(); //     blue-red
                 sleepC(100);
+                telemetry.addData("Place", "4");
+                telemetry.update();
             } else {
                 swingL(); //     red-blue
                 sleepC(100);
+                telemetry.addData("Place", "5");
+                telemetry.update();
             }
         } else if ((rb && lb) || (lr && rr)) { //sensors both working but giving opposite readings
             // do nothing
+            telemetry.addData("Place", "6");
+            telemetry.update();
         } else if (rb) { //both sensors are reading
             swingL();//     red-blue
             sleepC(100);
+            telemetry.addData("Place", "7");
+            telemetry.update();
         } else {
             swingR(); //       blue-red
             sleepC(100);
+            telemetry.addData("Place", "8");
+            telemetry.update();
         }
     }
 
@@ -133,7 +150,7 @@ public class Jewel {
     public void hitRedJewel() {
         ledOn(true);
         jewelExplore();
-        sleep(1000);
+        sleep(3000);
         hitBallsRedisTru(true);
         jewelStow();
     }
@@ -141,7 +158,7 @@ public class Jewel {
     public void hitBlueJewel() {
         ledOn(true);
         jewelExplore();
-        sleep(1000);
+        sleep(3000);
         hitBallsRedisTru(false);
         jewelStow();
     }

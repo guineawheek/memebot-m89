@@ -27,48 +27,33 @@ public class CloseRed extends AutonomousOpMode {
 
         servos.setRelicPivotGrab(false);
 
-     hitBlueJewel(); //all steps of jewels
-
+        hitBlueJewel(); //all steps of jewels
         //all distances unknown
-        MoveToByEncoder(20, 180, .3); //off the stone
+
+        if (column == 1) {
+            MoveToByEncoder(35.5, 180, .3);
+        } else if (column == 3) {
+            MoveToByEncoder(21.5, 180, .3);
+        } else {
+            MoveToByEncoder(30, 180, .3);
+        }
+
+        sleep(100);
 
         Turn(-90, gyro);
 
-        MoveToByEncoder(7,180,.3);
+        alignCryptoSequence();
 
-        if (column == 1) //left
+/*        if (column == 1) //left
             MoveToByEncoder(14.5, 90, .3);//19 in
         else if (column == 3) //right
-            MoveToByEncoder(3, 330,.3);
+            MoveToByEncoder(7, 300, .3);
             //opModeIsActive();
         else //center
-            MoveToByEncoder(4, 90, .5);//12 in
-
-        servos.setAutoAlign(true);//raise alignment
-
-        //   MoveToByRange(16/*cm*/,180,1); //forwards based on range
-
-        MoveToBySwitch(90, .3);//strafe until alignment hit
-
-        sleep(50);
-
-        servos.setAutoAlign(false); //lower alignment
-
-        servos.setFlipperUp(true);//deposit
-        sleep(1000);
-
-        servos.setFlipperGrab(false);
-        sleep(50);
-        // if (true) return;
-        MoveToByTime(700, 0, .3); //little nudge for block
-
-        MoveToByTime(1100, 180, .5);
+            MoveToByEncoder(5, 90, .3);//12 in
+*/
 
 
-
-        MoveToByEncoder(5, 0, .5); //back out - maybe for more? - park in box
-
-        servos.setFlipperUp(false);
-
+        depositGlyphNormal();
     }
 }

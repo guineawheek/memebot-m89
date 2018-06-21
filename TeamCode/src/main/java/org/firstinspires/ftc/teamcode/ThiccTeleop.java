@@ -7,13 +7,19 @@ import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.teamcode.subsystems.Gyro;
+import org.firstinspires.ftc.teamcode.subsystems.Jewel;
 import org.firstinspires.ftc.teamcode.subsystems.Servos;
 import org.openftc.hardware.rev.OpenRevDcMotorImplEx;
 
-@TeleOp(name = "Teleop")
+@TeleOp(name = "Thicccccccccc Teleop")
 public class ThiccTeleop extends OpMode {
     HolonomicDrivebase drivebase;
     Servos servos;
+    Jewel jewel;
 
     OpenRevDcMotorImplEx mtrIntakeLeft;
     OpenRevDcMotorImplEx mtrIntakeRight;
@@ -24,6 +30,7 @@ public class ThiccTeleop extends OpMode {
 
     ElapsedTime liftPidTimer;
 
+    Gyro gyro;
     /*
     boolean ScoringPositionActivated = false;
     boolean isGrabbed = false;
@@ -45,11 +52,15 @@ public class ThiccTeleop extends OpMode {
     int liftPidState = 0; // 0 disabled/teleop 1 waiting 2 active
     int liftPidTarget = 0;
 
+    double gyro_offset = 0;
+
     @Override
     public void init() {
         drivebase = new HolonomicDrivebase(hardwareMap);
         servos = new Servos(hardwareMap);
+        jewel = new Jewel(hardwareMap,telemetry);
         servos.init();
+        jewel.jewelStow();
 
         mtrIntakeLeft = new OpenRevDcMotorImplEx((DcMotorImplEx) hardwareMap.dcMotor.get("mtrIntakeLeft"));
         mtrIntakeRight = new OpenRevDcMotorImplEx((DcMotorImplEx) hardwareMap.dcMotor.get("mtrIntakeRight"));
@@ -61,17 +72,29 @@ public class ThiccTeleop extends OpMode {
         mtrRelic.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         liftPidTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+
+        gyro = new Gyro(hardwareMap, telemetry);
     }
 
     @Override
     public void loop() {
-
+        boolean driverCentric = false;
         // ----- drive code -----
         // square inputs; this makes smaller movements easier - le
         double x1 = Math.copySign(Math.pow(gamepad1.left_stick_x, 1), gamepad1.left_stick_x);
         double y1 = Math.copySign(Math.pow(gamepad1.left_stick_y, 1), -gamepad1.left_stick_y);
         double x2 = Math.copySign(Math.pow(gamepad1.right_stick_x, 1), gamepad1.right_stick_x);
 
+        if (driverCentric) {
+            double z = gyro.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle;
+
+            if (gamepad1.start) {
+                gyro_offset = (-z + Math.PI);
+            }
+            double angle = z + Math.PI - gyro_offset;
+            x1 = x1 * Math.cos(angle) - y1 * Math.sin(angle);
+            y1 = x1 * Math.sin(angle) + y1 * Math.cos(angle);
+        }
         drivebase.driveArcade(x1, y1, x2, 1);
 
         // ----- intake ------
@@ -92,7 +115,7 @@ public class ThiccTeleop extends OpMode {
 
         telemetry.addData("leftCurrent", mtrIntakeLeft.getCurrentDraw());
         telemetry.addData("rightCurrent", mtrIntakeRight.getCurrentDraw());
-
+        telemetry.addData("angle", gyro.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
         // ----- relic ----- toggle -----
 
         if (gamepad2.right_stick_y == 0)
@@ -117,8 +140,8 @@ public class ThiccTeleop extends OpMode {
             isPivoted = !isPivoted;
         }
 
-        servos.setRelicPivotGrab(pivotWatch);
-        servos.setRelicGrab(relicClampWatch);
+        servos.setRelicPivotGrab(isPivoted);
+        servos.setRelicGrab(isRelicClamped);
 
         pivotWatch = gamepad2.left_bumper;
         relicClampWatch = gamepad2.right_bumper;
@@ -127,8 +150,23 @@ public class ThiccTeleop extends OpMode {
 
         if (gamepad1.left_trigger > 0.5 && !flipWatch) {
             isFlipped = !isFlipped;
-            if (isFlipped)
+            if (isFlipped) {
                 isGrabbed = true;
+
+                servos.setFlipperGrab(isGrabbed);
+                servos.setFlipperUp(isFlipped);
+
+                mtrIntakeLeft.setPower(-1);
+                mtrIntakeRight.setPower(-1);
+
+                mtrGlyphLift.setPower(-.5);
+                sleepC(350);
+                mtrGlyphLift.setPower(0);
+                sleepC(200);
+                mtrIntakeLeft.setPower(0);
+                mtrIntakeRight.setPower(0);
+            }
+
         }
 
         if (gamepad1.left_bumper && !grabWatch)
@@ -169,6 +207,7 @@ public class ThiccTeleop extends OpMode {
                 mtrGlyphLift.setPower(Range.clip(error * 0.001, -1, 1));
                 break;
         }
+        jewel.jewelStow();
 
         /*
       if (gamepad1.left_trigger > .5 && !isPressed)
@@ -195,5 +234,13 @@ public class ThiccTeleop extends OpMode {
 
         bumperisPressed = gamepad1.right_bumper;
         */
+    }
+
+    public void sleepC(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

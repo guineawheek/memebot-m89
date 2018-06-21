@@ -49,14 +49,21 @@ public abstract class AutonomousOpMode extends LinearOpMode {
 
 
     //jewel
-    public static final double DOWN_STOW_POS = .12; //ready for init
-    public static final double SWING_STOW_POS = .48;
+    public static final double DOWN_STOW_POS = .19; //ready for init
+    public static final double SWING_STOW_POS = .34;
 
     public static final double DOWN_EX_POS = .84; //looking for the correct ball
     public static final double SWING_EX_POS = .58;
 
     public static final double SWING_LEFT = .22; //swing left or right to knock the jewel off
     public static final double SWING_RIGHT = .83;
+
+    public static final double EXPLORE_LEFT = .56;
+    public static final double EXPLORE_RIGHT = .60;
+
+    public boolean isOverTime = false;
+    public int cannotFindJewel = 0;
+    public boolean isInconclusive = false;
 
     public void initit() {
 
@@ -90,7 +97,7 @@ public abstract class AutonomousOpMode extends LinearOpMode {
 
         servos.autoInit();
 
-        jewel.jewelStow();
+        jewelStow();
 
         telemetry.addData("Status", "DriveTrain Initialized");
         telemetry.update();
@@ -149,9 +156,20 @@ public abstract class AutonomousOpMode extends LinearOpMode {
     public void MoveToBySwitch(double direction, double power) {
         SetEncoderOff();
         motors.MoveTo(direction, power);
-        while (snsLimitSwitch.getState() && opModeIsActive()) {
+        double maxTime = 5; //seconds
+        ElapsedTime runtime = new ElapsedTime();
+
+        runtime.reset();
+        runtime.startTime();
+
+        while (snsLimitSwitch.getState() && opModeIsActive() && runtime.seconds() < maxTime) {
         }
         motors.stopMotors();
+        if (runtime.seconds() < maxTime) {
+            isOverTime = false;
+        } else {
+            isOverTime = true;
+        }
 
     }
 
@@ -160,9 +178,8 @@ public abstract class AutonomousOpMode extends LinearOpMode {
         double cs = Math.cos(degreeRad);
         double sn = Math.sin(degreeRad);
         double target = (distance * COUNTS_PER_INCH) * (sn + cs);
-
-
     }
+
     public void MoveToByEncoder(double distance, double degree, double power) {
         double degreeRad = Math.toRadians(degree); // Convert to radians
         double cs = Math.cos(degreeRad);
@@ -248,7 +265,9 @@ public abstract class AutonomousOpMode extends LinearOpMode {
 
         SetEncoderOff();
         gyro.ResetAngle();
-
+        //
+        sleep(1000);
+//
         beginDegree = gyro.getZDegree();
         if (TurnDegree < 0) {
             correctionDegree = -correctionDegree;
@@ -336,35 +355,71 @@ public abstract class AutonomousOpMode extends LinearOpMode {
         svoJewelPivot.setPosition(SWING_RIGHT);
     }
 
+    public void exploreLeft() {
+        svoJewelPivot.setPosition(EXPLORE_LEFT);
+    }
+
+    public void exploreRight() {
+        svoJewelPivot.setPosition(EXPLORE_RIGHT);
+    }
+
     public void jewelAction(boolean lb, boolean lr, boolean rb, boolean rr) { //red version (if we want blue, rb,rr,lb,lr)
         if (lb && lr && rb && rr) {          // color sensors all fail
             swingL();
+            sleep(1000);
             swingR();
-            sleepC(100);
+            sleep(1000);
+            telemetry.addData("Place", "1");
+            telemetry.update();
+        /*    cannotFindJewel = cannotFindJewel + 1;
+            isInconclusive = true;
+            sleep(500);*/
+
         } else if (lb && lr) { //left sensor fails
             if (rb) {
                 swingL(); //   red-blue
                 sleepC(100);
+                isInconclusive = false;
+                telemetry.addData("Place", "2");
+                telemetry.update();
             } else {
                 swingR(); //    blue-red
                 sleepC(100);
+                isInconclusive = false;
+                telemetry.addData("Place", "3");
+                telemetry.update();
             }
         } else if (rb && rr) { //right sensor fails
             if (lb) {
                 swingR(); //     blue-red
                 sleepC(100);
+                isInconclusive = false;
+                telemetry.addData("Place", "4");
+                telemetry.update();
             } else {
                 swingL(); //     red-blue
                 sleepC(100);
+                isInconclusive = false;
+                telemetry.addData("Place", "5");
+                telemetry.update();
             }
         } else if ((rb && lb) || (lr && rr)) { //sensors both working but giving opposite readings
             // do nothing
+            telemetry.addData("Place", "6");
+            telemetry.update();
+            isInconclusive = false;
         } else if (rb) { //both sensors are reading
             swingL();//     red-blue
             sleepC(100);
+            isInconclusive = false;
+            telemetry.addData("Place", "7");
+            telemetry.update();
         } else {
             swingR(); //       blue-red
             sleepC(100);
+            isInconclusive = false;
+            telemetry.addData("Place", "8");
+            telemetry.update();
         }
     }
 
@@ -412,12 +467,69 @@ public abstract class AutonomousOpMode extends LinearOpMode {
         jewelStow();
     }
 
+    public void hitRedJewel2() {
+        ledOn(true);
+        while (isInconclusive = true && opModeIsActive()) {
+            if (cannotFindJewel == 0) {
+                jewelExplore();
+                sleep(1000);
+                hitBallsRedisTru(true);
+            } else if (cannotFindJewel == 1) {
+                exploreLeft();
+                sleep(1000);
+                hitBallsRedisTru(true);
+            } else if (cannotFindJewel == 2) {
+                exploreRight();
+                sleep(1000);
+                hitBallsRedisTru(true);
+            } else {
+                swingL();
+                sleep(2000);
+                swingR();
+                sleep(2000);
+                isInconclusive = false;
+            }
+        }
+        jewelStow();
+    }
+
     public void hitBlueJewel() {
         ledOn(true);
         jewelExplore();
         sleep(1000);
         hitBallsRedisTru(false);
         jewelStow();
+    }
+
+    public void alignCryptoSequence() {
+        MoveToByTime(2500, 180, .2);
+        sleep(500);
+        MoveToByEncoder(4, 0, .3);
+    }
+
+    public void depositGlyphNormal() {
+
+        servos.setAutoAlign(true);//raise alignment
+
+        MoveToBySwitch(90, .3);//strafe until alignment hit -----  need to fix ----- on time
+
+        sleep(50);
+
+        servos.setAutoAlign(false); //lower alignment
+
+        servos.setFlipperUp(true);//deposit
+
+        sleep(1000);
+
+        servos.setFlipperGrab(false);
+        sleep(50);
+        // if (true) return;
+        MoveToByTime(700, 0, .3); //little nudge for block
+        MoveToByTime(1100, 180, .5);
+
+        MoveToByEncoder(5, 0, .5); //back out - maybe for more? - park in box
+        servos.setFlipperUp(false);
+
     }
 
 }

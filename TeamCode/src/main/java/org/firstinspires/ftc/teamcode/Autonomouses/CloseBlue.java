@@ -32,41 +32,22 @@ public class CloseBlue extends AutonomousOpMode {
 
         mtrRelic.setPower(.2);
 
-        MoveToByEncoder(20, 0, .3); //off the stone
+
+        if (column == 1) {
+            MoveToByEncoder(32.25, 0, .3);
+        } else if (column == 3) {
+            MoveToByEncoder(48, 0, .3);
+        } else {
+            MoveToByEncoder(40.75, 0, .3);
+        }
 
         sleep(200);// allow time for relic extension to retract
 
-        Turn(90,gyro);
+        Turn(-90, gyro);
 
-        if (column == 1) //left
-            MoveToByEncoder(10, 270, .3);//19 in
-        else if (column == 3) //right
-            MoveToByEncoder(32, 270, .3);//5 in
-        else //center
-            MoveToByEncoder(18.5, 270, .3);//12 in
+        alignCryptoSequence();
 
-        servos.setAutoAlign(true);//raise alignment
-
-    //   MoveToByRange(16/*cm*/,180,1); //forwards based on range
-
-        MoveToBySwitch(90,.3);//strafe until alignment hit
-
-        sleep (50);
-
-        servos.setAutoAlign(false); //lower alignment
-
-        servos.setFlipperUp(true);//deposit
-        sleep (1000);
-
-        servos.setFlipperGrab(false);
-        sleep(50);
-       // if (true) return;
-        MoveToByTime(500, 0, .3); //little nudge for block
-        MoveToByTime(1000, 180, .5);
-
-        servos.setFlipperUp(false);
-
-        MoveToByEncoder(5,0,.5); //back out - maybe for more? - park in box
+        depositGlyphNormal();
 
     }
 }

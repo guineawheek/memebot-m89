@@ -2,15 +2,8 @@ package org.firstinspires.ftc.teamcode.Autonomouses;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.AutonomousOpMode;
-import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
-import org.firstinspires.ftc.teamcode.subsystems.Gyro;
-import org.firstinspires.ftc.teamcode.subsystems.Jewel;
-import org.firstinspires.ftc.teamcode.subsystems.Servos;
-import org.firstinspires.ftc.teamcode.subsystems.VuMarkRecognition;
 
 /**
  * Created by xiax on 4/23/2018.
@@ -19,7 +12,7 @@ import org.firstinspires.ftc.teamcode.subsystems.VuMarkRecognition;
 @Autonomous(name = "Far Red", group = "Autonomous")
 public class FarRed extends AutonomousOpMode {
     // far red
-  //  VuMarkRecognition vuMark;
+    //  VuMarkRecognition vuMark;
     @Override
     public void runOpMode() {
        /* motors = new DriveTrain(hardwareMap, telemetry);
@@ -52,36 +45,14 @@ public class FarRed extends AutonomousOpMode {
         //all distances unknown
         MoveToByEncoder(29.5, 180, .3); //off the stone
 
-        if (column == 1) //left
+        if (column == 1) { //left
             MoveToByEncoder(18.5, 90, .3);//19 in
-        else if (column == 3) //right
-            //MoveToByEncoder(10, 90, .3);//5 in
+            alignCryptoSequence();
+        } else if (column == 3) //right
             opModeIsActive();
         else //center
             MoveToByEncoder(10, 90, .3);//12 in
 
-        servos.setAutoAlign(true);//raise alignment
-
-    //   MoveToByRange(16/*cm*/,180,1); //forwards based on range
-
-        MoveToBySwitch(90,.3);//strafe until alignment hit
-
-        sleep (50);
-
-        servos.setAutoAlign(false); //lower alignment
-
-        servos.setFlipperUp(true);//deposit
-        sleep (1000);
-
-        servos.setFlipperGrab(false);
-        sleep(50);
-       // if (true) return;
-        MoveToByTime(500, 0, .3); //little nudge for block
-        MoveToByTime(1000, 180, .5);
-
-        servos.setFlipperUp(false);
-
-        MoveToByEncoder(5,0,.5); //back out - maybe for more? - park in box
-
+        depositGlyphNormal();
     }
 }
