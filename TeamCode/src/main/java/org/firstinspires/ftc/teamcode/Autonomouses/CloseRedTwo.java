@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.AutonomousOpMode;
 /**
  * Created by xiax on 4/23/2018.
  */
-
+@Disabled
 @Autonomous(name = "Close Red 2", group = "Autonomous")
 public class CloseRedTwo extends AutonomousOpMode {
 

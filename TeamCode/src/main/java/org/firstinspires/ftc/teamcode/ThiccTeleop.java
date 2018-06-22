@@ -78,22 +78,23 @@ public class ThiccTeleop extends OpMode {
 
     @Override
     public void loop() {
-        boolean driverCentric = false;
+
         // ----- drive code -----
         // square inputs; this makes smaller movements easier - le
         double x1 = Math.copySign(Math.pow(gamepad1.left_stick_x, 1), gamepad1.left_stick_x);
         double y1 = Math.copySign(Math.pow(gamepad1.left_stick_y, 1), -gamepad1.left_stick_y);
         double x2 = Math.copySign(Math.pow(gamepad1.right_stick_x, 1), gamepad1.right_stick_x);
 
-        if (driverCentric) {
+        if (isDriverCentric()) {
             double z = gyro.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle;
 
             if (gamepad1.start) {
-                gyro_offset = (-z + Math.PI);
+                gyro_offset = (z);// + Math.PI);
             }
-            double angle = z + Math.PI - gyro_offset;
-            x1 = x1 * Math.cos(angle) - y1 * Math.sin(angle);
-            y1 = x1 * Math.sin(angle) + y1 * Math.cos(angle);
+            double angle = z /*+ Math.PI*/ - gyro_offset;
+            double x = x1 * Math.cos(angle) - y1 * Math.sin(angle);
+            double y = x1 * Math.sin(angle) + y1 * Math.cos(angle);
+            x1 = x; y1 = y;
         }
         drivebase.driveArcade(x1, y1, x2, 1);
 
@@ -154,6 +155,7 @@ public class ThiccTeleop extends OpMode {
                 isGrabbed = true;
 
                 servos.setFlipperGrab(isGrabbed);
+                sleepC(200);
                 servos.setFlipperUp(isFlipped);
 
                 mtrIntakeLeft.setPower(-1);
@@ -234,6 +236,10 @@ public class ThiccTeleop extends OpMode {
 
         bumperisPressed = gamepad1.right_bumper;
         */
+    }
+
+    public boolean isDriverCentric() {
+        return false;
     }
 
     public void sleepC(long millis) {

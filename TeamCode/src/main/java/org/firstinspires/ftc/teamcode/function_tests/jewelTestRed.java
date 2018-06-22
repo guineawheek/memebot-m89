@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.Gyro;
 import org.firstinspires.ftc.teamcode.subsystems.Jewel;
 
-
+@Disabled
 @Autonomous(name = "JewelTestRed",group = "a")
 public class jewelTestRed extends AutonomousOpMode {
 

@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.Gyro;
 import org.firstinspires.ftc.teamcode.subsystems.Servos;
 
-
+@Disabled
 @TeleOp(name = "servoTest", group = "a")
 public class grabTests extends LinearOpMode {
 

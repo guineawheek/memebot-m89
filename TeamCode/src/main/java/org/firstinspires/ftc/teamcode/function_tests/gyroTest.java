@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.function_tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.AutonomousOpMode;
 import org.firstinspires.ftc.teamcode.subsystems.AndroidGyro;
 import org.firstinspires.ftc.teamcode.subsystems.Jewel;
 
-
+@Disabled
 @Autonomous(name = "GyroTest",group = "a")
 public class gyroTest extends AutonomousOpMode {
 
