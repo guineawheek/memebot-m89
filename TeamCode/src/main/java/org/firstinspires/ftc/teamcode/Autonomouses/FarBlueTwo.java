@@ -2,16 +2,15 @@ package org.firstinspires.ftc.teamcode.Autonomouses;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.AutonomousOpMode;
 
 /**
  * Created by xiax on 4/23/2018.
  */
-@Disabled
-@Autonomous(name = "Far Blue Fail", group = "Autonomous")
-public class FarBlue extends AutonomousOpMode {
+
+@Autonomous(name = "Far Blue", group = "Autonomous")
+public class FarBlueTwo extends AutonomousOpMode {
 
     @Override
     public void runOpMode() {
@@ -37,14 +36,16 @@ public class FarBlue extends AutonomousOpMode {
 
         sleep(200);// allow time for relic extension to retract
 
-        Turn(180,gyro);
+        Turn(-90,gyro);
 
         if (column == 1) //left
-            MoveToByEncoder(18, 270, .3);//19 in
+            MoveToByEncoder(7.5, 0, .3);//19 in
         else if (column == 3) //right
-            MoveToByEncoder(42, 270, .3);//5 in
+            MoveToByEncoder(24, 0, .3);//5 in
         else //center
-            MoveToByEncoder(26.75, 270, .3);//25?
+            MoveToByEncoder(14, 0, .3);//25?
+
+        Turn(-90, gyro);
 
         alignCryptoSequence();
 

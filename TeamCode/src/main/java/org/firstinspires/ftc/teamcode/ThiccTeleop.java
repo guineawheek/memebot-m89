@@ -56,7 +56,7 @@ public class ThiccTeleop extends OpMode {
 
     @Override
     public void init() {
-        drivebase = new HolonomicDrivebase(hardwareMap);
+        drivebase = new HolonomicDrivebase(hardwareMap , telemetry);
         servos = new Servos(hardwareMap);
         jewel = new Jewel(hardwareMap,telemetry);
         servos.init();

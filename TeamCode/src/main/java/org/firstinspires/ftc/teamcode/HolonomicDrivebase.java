@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import java.util.Arrays;
 
 public class HolonomicDrivebase {
@@ -12,11 +14,17 @@ public class HolonomicDrivebase {
     protected DcMotor mtrBL;
     protected DcMotor mtrBR;
 
-    public HolonomicDrivebase(HardwareMap hardwareMap) {
+    HardwareMap hardwareMap;
+    Telemetry telemetry;
+
+    public HolonomicDrivebase(HardwareMap hardwareMap , Telemetry telemetry) {
         mtrFL = hardwareMap.dcMotor.get("m1");
         mtrFR = hardwareMap.dcMotor.get("m2");
         mtrBL = hardwareMap.dcMotor.get("m4");
         mtrBR = hardwareMap.dcMotor.get("m3");
+
+        this.hardwareMap = hardwareMap;
+        this.telemetry = telemetry;
 
         mtrFR.setDirection(DcMotor.Direction.FORWARD);
         mtrFL.setDirection(DcMotor.Direction.FORWARD);
@@ -44,7 +52,13 @@ public class HolonomicDrivebase {
             bl /= powers[3];
             br /= powers[3];
         }
+
         setDrivePowers(fl, fr, bl, br);
+        telemetry.addData("Front Left" , fl);
+        telemetry.addData("Front Right" , fr);
+        telemetry.addData("Back Left" , bl);
+        telemetry.addData("Back Right" , br);
+        telemetry.update();
     }
 
     public void setDrivePowers(double fl, double fr, double bl, double br) {
