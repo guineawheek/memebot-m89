@@ -13,7 +13,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.subsystems.Gyro;
 import org.firstinspires.ftc.teamcode.subsystems.Jewel;
 import org.firstinspires.ftc.teamcode.subsystems.Servos;
-import org.openftc.hardware.rev.OpenRevDcMotorImplEx;
 
 @TeleOp(name = "Thicccccccccc Teleop")
 public class ThiccTeleop extends OpMode {
@@ -21,8 +20,8 @@ public class ThiccTeleop extends OpMode {
     Servos servos;
     Jewel jewel;
 
-    OpenRevDcMotorImplEx mtrIntakeLeft;
-    OpenRevDcMotorImplEx mtrIntakeRight;
+    DcMotor mtrIntakeLeft;
+    DcMotor mtrIntakeRight;
 
     DcMotor mtrGlyphLift;
 
@@ -62,8 +61,8 @@ public class ThiccTeleop extends OpMode {
         servos.init();
         jewel.jewelStow();
 
-        mtrIntakeLeft = new OpenRevDcMotorImplEx((DcMotorImplEx) hardwareMap.dcMotor.get("mtrIntakeLeft"));
-        mtrIntakeRight = new OpenRevDcMotorImplEx((DcMotorImplEx) hardwareMap.dcMotor.get("mtrIntakeRight"));
+        mtrIntakeLeft = hardwareMap.dcMotor.get("mtrIntakeLeft");
+        mtrIntakeRight = hardwareMap.dcMotor.get("mtrIntakeRight");
 
         mtrGlyphLift = hardwareMap.dcMotor.get("mtrGlyphLift");
         mtrRelic = hardwareMap.dcMotor.get("mtrRelic");
@@ -114,8 +113,8 @@ public class ThiccTeleop extends OpMode {
         }
 
 
-        telemetry.addData("leftCurrent", mtrIntakeLeft.getCurrentDraw());
-        telemetry.addData("rightCurrent", mtrIntakeRight.getCurrentDraw());
+        //telemetry.addData("leftCurrent", mtrIntakeLeft.getCurrentDraw());
+        //telemetry.addData("rightCurrent", mtrIntakeRight.getCurrentDraw());
         telemetry.addData("angle", gyro.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
         // ----- relic ----- toggle -----
 
@@ -168,14 +167,17 @@ public class ThiccTeleop extends OpMode {
                 mtrIntakeLeft.setPower(0);
                 mtrIntakeRight.setPower(0);
             }
-
+            servos.setFlipperUp(isFlipped);
         }
 
         if (gamepad1.left_bumper && !grabWatch)
             isGrabbed = !isGrabbed;
 
-        servos.setFlipperUp(isFlipped);
+        if(gamepad1.a || gamepad2.right_trigger >.5){
+            servos.setFlipperHalfway();
+        }
         servos.setFlipperGrab(isGrabbed);
+
 
         flipWatch = gamepad1.left_trigger > 0.5;
         grabWatch = gamepad1.left_bumper;

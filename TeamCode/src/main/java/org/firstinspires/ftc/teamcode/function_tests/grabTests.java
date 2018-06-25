@@ -16,90 +16,90 @@ import org.firstinspires.ftc.teamcode.subsystems.Servos;
 public class grabTests extends LinearOpMode {
 
     // Servos servo;
-    public Servo svoJewelLift;
-    public Servo svoJewelPivot;
+    public Servo svoFlipperFlip;
+
 
     @Override
     public void runOpMode() {
         //  servo = new Servos(hardwareMap);
-        svoJewelPivot = hardwareMap.servo.get("svoJewelPivot");
+        svoFlipperFlip = hardwareMap.servo.get("svoFlipperFlip");
 
         waitForStart();
 
         while (opModeIsActive()) {
             if (gamepad1.a) {
-                svoJewelPivot.setPosition(0.35);
+                svoFlipperFlip.setPosition(0.54);
             }
             if (gamepad1.b) {
-                svoJewelPivot.setPosition(.36);
+                svoFlipperFlip.setPosition(.55);
             }
             if (gamepad1.y) {
-                svoJewelPivot.setPosition(.37);
+                svoFlipperFlip.setPosition(.56);
             }
             if (gamepad1.x) {
-                svoJewelPivot.setPosition(0.38);
+                svoFlipperFlip.setPosition(.57);
             }
             if (gamepad1.dpad_up) {
-                svoJewelPivot.setPosition(0.77);
+                svoFlipperFlip.setPosition(.58); // resting
             }
             if (gamepad1.dpad_left) {
-                svoJewelPivot.setPosition(.76);
+                svoFlipperFlip.setPosition(.59);
             }
             if (gamepad1.dpad_down) {
-                svoJewelPivot.setPosition(0.75);
+                svoFlipperFlip.setPosition(.6);
             }
             if (gamepad1.dpad_right) {
-                svoJewelPivot.setPosition(.74);
+                svoFlipperFlip.setPosition(.06);
             }
             if (gamepad1.right_bumper) {
-                svoJewelPivot.setPosition(.73);
+                svoFlipperFlip.setPosition(.07);
             }
             if (gamepad1.right_trigger > .5) {
-                svoJewelPivot.setPosition(.72);
+                svoFlipperFlip.setPosition(.08);
             }
             if (gamepad1.left_bumper) {
-                svoJewelPivot.setPosition(.71);
+                svoFlipperFlip.setPosition(.09);
             }
             if (gamepad1.left_trigger > .5) {
-                svoJewelPivot.setPosition(.7);
+                svoFlipperFlip.setPosition(.10);
             }
 
 
             if (gamepad2.a) {
-                svoJewelPivot.setPosition(.69);
+                svoFlipperFlip.setPosition(.11); //halfway up
             }
             if (gamepad2.b) {
-                svoJewelPivot.setPosition(.68); //auto init .48
+                svoFlipperFlip.setPosition(.12); //auto init .48
             }
             if (gamepad2.y) {
-                svoJewelPivot.setPosition(.67);
+                svoFlipperFlip.setPosition(.13);
             }
             if (gamepad2.x) {
-                svoJewelPivot.setPosition(.66);
+                svoFlipperFlip.setPosition(.14);
             }
             if (gamepad2.dpad_up) {
-                svoJewelPivot.setPosition(.65);
+                svoFlipperFlip.setPosition(.15);
             }
             if (gamepad2.dpad_left) {
-                svoJewelPivot.setPosition(.64);
+                svoFlipperFlip.setPosition(.16);
             }
             if (gamepad2.dpad_down) {
-                svoJewelPivot.setPosition(.63);
+                svoFlipperFlip.setPosition(.17);
             }
             if (gamepad2.dpad_right) {
-                svoJewelPivot.setPosition(.62);
+                svoFlipperFlip.setPosition(.18);
             }
             if (gamepad2.right_bumper) {
-                svoJewelPivot.setPosition(.61);
+                svoFlipperFlip.setPosition(.19);
             }
             if (gamepad2.right_trigger > .5) {
-                svoJewelPivot.setPosition(.6);
+                svoFlipperFlip.setPosition(.20);
             }
             if (gamepad2.left_bumper) {
-                svoJewelPivot.setPosition(.59);
+                svoFlipperFlip.setPosition(.21);
             }
             if (gamepad2.left_trigger > .5) {
-                svoJewelPivot.setPosition(.58); //.58
+                svoFlipperFlip.setPosition(.22); //.58
             }
         }
 

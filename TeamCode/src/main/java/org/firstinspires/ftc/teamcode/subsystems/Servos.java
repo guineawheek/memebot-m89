@@ -36,7 +36,8 @@ front5: jeweldown 0.23
     public static final double RELIC_GRAB = 1.0;
 
     public static final double FLIPPER_UP = 0;
-    public static final double FLIPPER_DOWN = 0.553;
+    public static final double FLIPPER_DOWN = 0.58;
+    public static final double FLIPPER_HALFWAY = .11;
 
     public static final double FLIPPER_UNGRAB = 0.57; // not used
     public static final double FLIPPER_GRAB = 0.15;
@@ -132,6 +133,9 @@ front5: jeweldown 0.23
 
     public void setFlipperUp(boolean up) {
         svoFlipperFlip.setPosition(up ? FLIPPER_UP : FLIPPER_DOWN);
+    }
+    public void setFlipperHalfway(){
+        svoFlipperFlip.setPosition(FLIPPER_HALFWAY);
     }
 
     public void setFlipperGrab(boolean grab) {
